@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile data",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "contributor", "admin"] },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["uid", "name", "email", "role", "createdAt"]
+    },
+    "Listing": {
+      "title": "Listing",
+      "description": "A listing for PG, Hostel, etc.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "city": { "type": "string" },
+        "address": { "type": "string" },
+        "price": { "type": "number" },
+        "contact": { "type": "string" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "featured": { "type": "boolean" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["title", "category", "city", "address", "price", "contact", "images", "status", "featured", "authorId", "authorName", "createdAt"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "A review for a listing",
+      "type": "object",
+      "properties": {
+        "listingId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["listingId", "userId", "userName", "rating", "comment", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profiles"
+    },
+    "/listings/{listingId}": {
+      "schema": { "$ref": "#/entities/Listing" },
+      "description": "Listings"
+    },
+    "/reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "Reviews"
+    }
+  }
+}
