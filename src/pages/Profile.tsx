@@ -5,7 +5,7 @@ import { db } from '../lib/firebase';
 import { Listing } from '../types';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { User, LogOut, Settings, PlusCircle, Building2, MapPin, List } from 'lucide-react';
+import { User, LogOut, Settings, PlusCircle, Building2, MapPin, List, Star } from 'lucide-react';
 
 export default function Profile() {
   const { currentUser, userProfile, logout } = useAuth();
@@ -138,7 +138,18 @@ export default function Profile() {
                   <div className="flex-grow flex flex-col justify-between">
                     <div>
                       <div className="flex justify-between items-start">
-                        <h3 className="text-lg font-bold text-white line-clamp-1">{listing.title}</h3>
+                        <div>
+                          <h3 className="text-lg font-bold text-white line-clamp-1">{listing.title}</h3>
+                          <div className="flex items-center mt-1">
+                            <Star className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400 mr-1" />
+                            <span className="text-white text-xs font-bold">
+                              {listing.averageRating ? listing.averageRating.toFixed(1) : 'New'}
+                            </span>
+                            {listing.reviewCount !== undefined && listing.reviewCount > 0 && (
+                              <span className="text-gray-400 text-xs ml-1">({listing.reviewCount})</span>
+                            )}
+                          </div>
+                        </div>
                         <span className={`px-2 py-1 text-xs rounded-full whitespace-nowrap ml-2 ${
                           listing.status === 'approved' ? 'bg-green-500/20 text-green-400 border border-green-500/20' : 
                           listing.status === 'rejected' ? 'bg-red-500/20 text-red-400 border border-red-500/20' : 

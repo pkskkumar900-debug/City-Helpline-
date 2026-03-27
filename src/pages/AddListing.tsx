@@ -5,8 +5,10 @@ import { db, storage } from '../lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Listing } from '../types';
-import { UploadCloud, X, ArrowLeft } from 'lucide-react';
+import { UploadCloud, X, ArrowLeft, Tag, MapPin } from 'lucide-react';
 import { motion } from 'motion/react';
+import { CATEGORIES, STATE_CITIES } from '../lib/constants';
+import { SearchableSelect } from '../components/ui/SearchableSelect';
 
 export default function AddListing() {
   const { currentUser, userProfile } = useAuth();
@@ -15,6 +17,7 @@ export default function AddListing() {
   const [error, setError] = useState('');
   
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [category, setCategory] = useState('PG');
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
@@ -22,6 +25,12 @@ export default function AddListing() {
   const [contact, setContact] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+
+  const categoryOptions = CATEGORIES.map(cat => ({ value: cat, label: cat }));
+  
+  const cityOptions = Object.entries(STATE_CITIES).flatMap(([state, cities]) => 
+    cities.map(c => ({ value: c, label: c, group: state }))
+  );
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -42,6 +51,16 @@ export default function AddListing() {
     e.preventDefault();
     if (!currentUser || !userProfile) return;
     
+    if (!category) {
+      setError('Please select a category');
+      return;
+    }
+    
+    if (!city) {
+      setError('Please select a city');
+      return;
+    }
+    
     setLoading(true);
     setError('');
 
@@ -58,6 +77,7 @@ export default function AddListing() {
       // 2. Save listing to Firestore
       const newListing: Omit<Listing, 'id'> = {
         title,
+        description,
         category,
         city,
         address,
@@ -126,31 +146,37 @@ export default function AddListing() {
                 />
               </div>
 
-              <div>
+              <div className="relative z-30">
                 <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>
-                <select
-                  required
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none"
+                <SearchableSelect
+                  options={categoryOptions}
                   value={category}
-                  onChange={e => setCategory(e.target.value)}
-                >
-                  <option value="PG">PG / Hostel</option>
-                  <option value="Mess">Mess / Tiffin</option>
-                  <option value="Library">Library</option>
-                  <option value="Coaching">Coaching</option>
-                  <option value="Other">Other</option>
-                </select>
+                  onChange={setCategory}
+                  placeholder="Select Category"
+                  icon={<Tag className="h-5 w-5" />}
+                />
               </div>
 
-              <div>
+              <div className="relative z-20">
                 <label className="block text-sm font-medium text-gray-300 mb-2">City</label>
-                <input
-                  type="text"
-                  required
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                  placeholder="e.g., Kota"
+                <SearchableSelect
+                  options={cityOptions}
                   value={city}
-                  onChange={e => setCity(e.target.value)}
+                  onChange={setCity}
+                  placeholder="Select City"
+                  icon={<MapPin className="h-5 w-5" />}
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                <textarea
+                  required
+                  rows={4}
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
+                  placeholder="Describe your listing in detail..."
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
                 />
               </div>
 

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { doc, getDoc, collection, query, where, getDocs, addDoc, orderBy } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs, addDoc, orderBy, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { Listing, Review } from '../types';
-import { MapPin, Phone, User, Star, Calendar, MessageCircle, ArrowLeft } from 'lucide-react';
+import { MapPin, Phone, User, Star, Calendar, MessageCircle, ArrowLeft, Heart } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function ListingDetails() {
@@ -67,7 +67,20 @@ export default function ListingDetails() {
       };
 
       const docRef = await addDoc(collection(db, 'reviews'), newReview);
-      setReviews([{ id: docRef.id, ...newReview }, ...reviews]);
+      const updatedReviews = [{ id: docRef.id, ...newReview }, ...reviews];
+      setReviews(updatedReviews);
+      
+      // Update listing with new average rating and review count
+      const newReviewCount = updatedReviews.length;
+      const newAverageRating = updatedReviews.reduce((acc, rev) => acc + rev.rating, 0) / newReviewCount;
+      
+      await updateDoc(doc(db, 'listings', id), {
+        averageRating: newAverageRating,
+        reviewCount: newReviewCount
+      });
+      
+      setListing(prev => prev ? { ...prev, averageRating: newAverageRating, reviewCount: newReviewCount } : null);
+
       setComment('');
       setRating(5);
     } catch (error) {
@@ -85,9 +98,31 @@ export default function ListingDetails() {
     return <div className="text-center py-20 text-2xl font-bold text-gray-700">Listing not found</div>;
   }
 
-  const averageRating = reviews.length > 0 
-    ? (reviews.reduce((acc, rev) => acc + rev.rating, 0) / reviews.length).toFixed(1) 
-    : 'New';
+  const averageRating = listing.averageRating 
+    ? listing.averageRating.toFixed(1) 
+    : (reviews.length > 0 
+        ? (reviews.reduce((acc, rev) => acc + rev.rating, 0) / reviews.length).toFixed(1) 
+        : 'New');
+
+  const isSaved = userProfile?.savedListings?.includes(listing.id) || false;
+
+  const toggleSave = async () => {
+    if (!currentUser) return;
+    try {
+      const userRef = doc(db, 'users', currentUser.uid);
+      if (isSaved) {
+        await updateDoc(userRef, {
+          savedListings: arrayRemove(listing.id)
+        });
+      } else {
+        await updateDoc(userRef, {
+          savedListings: arrayUnion(listing.id)
+        });
+      }
+    } catch (error) {
+      console.error("Error toggling save:", error);
+    }
+  };
 
   return (
     <motion.div 
@@ -128,6 +163,16 @@ export default function ListingDetails() {
                   </span>
                 )}
               </div>
+              {currentUser && (
+                <button 
+                  onClick={toggleSave}
+                  className="absolute top-4 right-4 p-3 rounded-full bg-gray-900/50 backdrop-blur-sm hover:bg-gray-900/80 transition-colors shadow-lg group/btn z-10"
+                >
+                  <Heart 
+                    className={`h-6 w-6 transition-colors ${isSaved ? 'fill-red-500 text-red-500' : 'text-white group-hover/btn:text-red-400'}`} 
+                  />
+                </button>
+              )}
             </div>
 
             {/* Details */}

@@ -6,6 +6,7 @@ export interface UserProfile {
   email: string;
   role: Role;
   createdAt: number;
+  savedListings?: string[];
 }
 
 export type ListingStatus = 'pending' | 'approved' | 'rejected';
@@ -13,6 +14,7 @@ export type ListingStatus = 'pending' | 'approved' | 'rejected';
 export interface Listing {
   id: string;
   title: string;
+  description: string;
   category: string;
   city: string;
   address: string;
@@ -24,6 +26,8 @@ export interface Listing {
   authorId: string;
   authorName: string;
   createdAt: number;
+  averageRating?: number;
+  reviewCount?: number;
 }
 
 export interface Review {

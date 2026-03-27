@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Listing } from '../types';
-import { Search, MapPin, Tag, Building2, BookOpen, Coffee, GraduationCap, ArrowRight, Star } from 'lucide-react';
+import { Search, Building2, BookOpen, Coffee, GraduationCap, ArrowRight, Star } from 'lucide-react';
+import { ListingCard } from '../components/ListingCard';
 import { motion } from 'motion/react';
 
 export default function Home() {
@@ -55,10 +56,10 @@ export default function Home() {
   };
 
   const categories = [
-    { name: 'PG / Hostel', icon: Building2, color: 'text-blue-400', bg: 'bg-blue-500/20' },
-    { name: 'Mess / Tiffin', icon: Coffee, color: 'text-orange-400', bg: 'bg-orange-500/20' },
+    { name: 'PG', icon: Building2, color: 'text-blue-400', bg: 'bg-blue-500/20' },
+    { name: 'Mess', icon: Coffee, color: 'text-orange-400', bg: 'bg-orange-500/20' },
     { name: 'Library', icon: BookOpen, color: 'text-green-400', bg: 'bg-green-500/20' },
-    { name: 'Coaching', icon: GraduationCap, color: 'text-purple-400', bg: 'bg-purple-500/20' },
+    { name: 'Coaching Institute', icon: GraduationCap, color: 'text-purple-400', bg: 'bg-purple-500/20' },
   ];
 
   return (
@@ -127,7 +128,7 @@ export default function Home() {
           {categories.map((cat, index) => {
             const Icon = cat.icon;
             return (
-              <Link to="/search" key={index} className="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:-translate-y-1 transition-transform duration-300 group cursor-pointer">
+              <Link to="/search" state={{ category: cat.name }} key={index} className="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:-translate-y-1 transition-transform duration-300 group cursor-pointer">
                 <div className={`p-4 rounded-full ${cat.bg} ${cat.color} mb-4 group-hover:scale-110 transition-transform duration-300`}>
                   <Icon className="h-8 w-8" />
                 </div>
@@ -206,60 +207,5 @@ export default function Home() {
         )}
       </div>
     </div>
-  );
-}
-
-function ListingCard({ listing }: { listing: Listing }) {
-  return (
-    <Link to={`/listing/${listing.id}`} className="block h-full">
-      <div className="glass-card rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] hover:-translate-y-2 h-full flex flex-col group">
-        <div className="h-56 w-full relative overflow-hidden">
-          {listing.images && listing.images.length > 0 ? (
-            <img
-              src={listing.images[0]}
-              alt={listing.title}
-              className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-800 text-gray-500">
-              <Building2 className="h-12 w-12" />
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-80"></div>
-          
-          <div className="absolute top-4 right-4 flex flex-col gap-2 items-end">
-            {listing.featured && (
-              <span className="bg-yellow-500/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                FEATURED
-              </span>
-            )}
-            <span className="bg-blue-600/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-              {listing.category}
-            </span>
-          </div>
-          
-          <div className="absolute bottom-4 left-4 right-4">
-            <h3 className="text-xl font-bold text-white mb-1 truncate drop-shadow-md">{listing.title}</h3>
-            <div className="flex items-center text-sm text-gray-300 drop-shadow-md">
-              <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
-              <span className="truncate">{listing.city}</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="p-5 flex-grow flex flex-col justify-between bg-gray-900/40">
-          <p className="text-gray-400 text-sm line-clamp-2 mb-4">{listing.address}</p>
-          <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-700/50">
-            <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-200">
-              ₹{listing.price.toLocaleString()}<span className="text-sm text-gray-500 font-normal">/mo</span>
-            </span>
-            <span className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
-              <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-white transition-colors" />
-            </span>
-          </div>
-        </div>
-      </div>
-    </Link>
   );
 }
