@@ -1,14 +1,10 @@
 export async function uploadImageToCloudinary(file: File): Promise<string> {
-  const cloudName = 'djpqwrsl1';
-  const uploadPreset = 'cityhelpline_upload';
-  const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('upload_preset', uploadPreset);
+  formData.append('upload_preset', 'cityhelpline_upload');
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch('https://api.cloudinary.com/v1_1/djpqwrsl1/image/upload', {
       method: 'POST',
       body: formData,
     });
