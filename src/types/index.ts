@@ -7,6 +7,8 @@ export interface UserProfile {
   role: Role;
   createdAt: number;
   savedListings?: string[];
+  photoURL?: string;
+  themePreference?: 'light' | 'dark' | 'system';
 }
 
 export type ListingStatus = 'pending' | 'approved' | 'rejected';

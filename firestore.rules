@@ -34,11 +34,13 @@ service cloud.firestore {
     // ===============================================================
     
     function isValidUser(data) {
-      return hasOnlyAllowedFields(['uid', 'name', 'email', 'role', 'createdAt']) &&
+      return hasOnlyAllowedFields(['uid', 'name', 'email', 'role', 'createdAt', 'photoURL', 'themePreference']) &&
              data.uid is string && data.uid.size() > 0 && data.uid.size() < 100 &&
              data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
              data.email is string && isValidEmail(data.email) &&
              data.role in ['user', 'contributor', 'admin'] &&
+             (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() < 1000)) &&
+             (!('themePreference' in data) || (data.themePreference in ['light', 'dark', 'system'])) &&
              (data.createdAt is number || data.createdAt is timestamp);
     }
 

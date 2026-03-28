@@ -45,3 +45,15 @@ body {
   -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* Instant Light Mode using CSS Filters */
+html.light {
+  filter: invert(1) hue-rotate(180deg);
+  background-color: #fff;
+}
+
+html.light img, 
+html.light video, 
+html.light .no-invert {
+  filter: invert(1) hue-rotate(180deg);
+}

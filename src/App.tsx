@@ -8,6 +8,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { Navbar } from './components/layout/Navbar';
 import { BottomNav } from './components/layout/BottomNav';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
+import { useEffect } from 'react';
 
 // Pages
 import Home from './pages/Home';
@@ -20,6 +21,15 @@ import Search from './pages/Search';
 import Profile from './pages/Profile';
 
 export default function App() {
+  useEffect(() => {
+    const theme = localStorage.getItem('theme') || 'system';
+    if (theme === 'light' || (theme === 'system' && !window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+  }, []);
+
   return (
     <AuthProvider>
       <Router>
