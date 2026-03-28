@@ -1,5 +1,5 @@
 export async function uploadImageToCloudinary(file: File): Promise<string> {
-  const cloudName = 'dljpqwrs11';
+  const cloudName = 'djpqwrsl1';
   const uploadPreset = 'cityhelpline_upload';
   const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 

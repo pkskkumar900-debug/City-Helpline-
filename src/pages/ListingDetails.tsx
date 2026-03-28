@@ -29,7 +29,16 @@ export default function ListingDetails() {
         const docRef = doc(db, 'listings', id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setListing({ id: docSnap.id, ...docSnap.data() } as Listing);
+          const data = { id: docSnap.id, ...docSnap.data() } as Listing;
+          
+          const isAuthor = currentUser && currentUser.uid === data.authorId;
+          const isAdmin = userProfile?.role === 'admin' || currentUser?.email === 'pkskkumar900@gmail.com';
+          
+          if (data.status === 'approved' || isAuthor || isAdmin) {
+            setListing(data);
+          } else {
+            setListing(null);
+          }
         } else {
           setListing(null);
         }
@@ -54,7 +63,7 @@ export default function ListingDetails() {
     };
 
     fetchListingAndReviews();
-  }, [id]);
+  }, [id, currentUser, userProfile]);
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

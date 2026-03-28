@@ -14,6 +14,7 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'listings' | 'users'>('listings');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
 
   const fetchData = async () => {
     const isDefaultAdmin = currentUser?.email === 'pkskkumar900@gmail.com';
@@ -91,6 +92,10 @@ export default function AdminDashboard() {
 
   const pendingCount = listings.filter(l => l.status === 'pending').length;
 
+  const filteredListings = statusFilter === 'all' 
+    ? listings 
+    : listings.filter(l => l.status === statusFilter);
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -154,19 +159,50 @@ export default function AdminDashboard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 mb-6">
-          <button
-            className={`py-3 px-6 font-medium text-sm rounded-xl transition-all ${activeTab === 'listings' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white border border-gray-700/50'}`}
-            onClick={() => setActiveTab('listings')}
-          >
-            Manage Listings
-          </button>
-          <button
-            className={`py-3 px-6 font-medium text-sm rounded-xl transition-all ${activeTab === 'users' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white border border-gray-700/50'}`}
-            onClick={() => setActiveTab('users')}
-          >
-            Manage Users
-          </button>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div className="flex gap-4">
+            <button
+              className={`py-3 px-6 font-medium text-sm rounded-xl transition-all ${activeTab === 'listings' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white border border-gray-700/50'}`}
+              onClick={() => setActiveTab('listings')}
+            >
+              Manage Listings
+            </button>
+            <button
+              className={`py-3 px-6 font-medium text-sm rounded-xl transition-all ${activeTab === 'users' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white border border-gray-700/50'}`}
+              onClick={() => setActiveTab('users')}
+            >
+              Manage Users
+            </button>
+          </div>
+          
+          {activeTab === 'listings' && (
+            <div className="flex bg-gray-800/50 rounded-xl p-1 border border-gray-700/50">
+              <button
+                onClick={() => setStatusFilter('all')}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'all' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'}`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setStatusFilter('pending')}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : 'text-gray-400 hover:text-white'}`}
+              >
+                Pending
+              </button>
+              <button
+                onClick={() => setStatusFilter('approved')}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'approved' ? 'bg-green-500/20 text-green-400' : 'text-gray-400 hover:text-white'}`}
+              >
+                Approved
+              </button>
+              <button
+                onClick={() => setStatusFilter('rejected')}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'rejected' ? 'bg-red-500/20 text-red-400' : 'text-gray-400 hover:text-white'}`}
+              >
+                Rejected
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Content */}
@@ -177,64 +213,76 @@ export default function AdminDashboard() {
           className="glass-card rounded-2xl overflow-hidden"
         >
           {activeTab === 'listings' ? (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-700/50">
-                <thead className="bg-gray-900/40">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Title</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Author</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-700/50">
-                  {listings.map((listing) => (
-                    <tr key={listing.id} className="hover:bg-gray-800/30 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-white">{listing.title}</div>
-                        <div className="text-xs text-gray-400 mt-1">{listing.city} • {listing.category}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        {listing.authorName}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border ${
-                          listing.status === 'approved' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 
-                          listing.status === 'rejected' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 
-                          'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
-                        }`}>
-                          {listing.status}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+              {filteredListings.map((listing) => (
+                <div key={listing.id} className="bg-gray-800/50 rounded-xl border border-gray-700/50 overflow-hidden flex flex-col">
+                  <div className="h-48 relative bg-gray-900">
+                    {listing.images && listing.images.length > 0 ? (
+                      <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-500">No Image</div>
+                    )}
+                    <div className="absolute top-3 left-3 flex gap-2">
+                      <span className={`px-2.5 py-1 text-xs font-bold rounded-full shadow-lg ${
+                        listing.status === 'approved' ? 'bg-green-500 text-white' : 
+                        listing.status === 'rejected' ? 'bg-red-500 text-white' : 
+                        'bg-yellow-500 text-white'
+                      }`}>
+                        {listing.status.toUpperCase()}
+                      </span>
+                      {listing.featured && (
+                        <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-blue-500 text-white shadow-lg">
+                          FEATURED
                         </span>
-                        {listing.featured && (
-                          <span className="ml-2 px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
-                            Featured
-                          </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="p-5 flex-grow flex flex-col">
+                    <h3 className="text-lg font-bold text-white mb-1 line-clamp-1">{listing.title}</h3>
+                    <div className="flex items-center text-xs text-gray-400 mb-3 gap-2">
+                      <span className="bg-gray-700/50 px-2 py-1 rounded-md">{listing.category}</span>
+                      <span>•</span>
+                      <span>{listing.city}</span>
+                    </div>
+                    
+                    <p className="text-sm text-gray-300 line-clamp-2 mb-4 flex-grow">
+                      {listing.description}
+                    </p>
+                    
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-700/50 mt-auto">
+                      <div className="text-xs text-gray-400">
+                        By <span className="text-gray-300 font-medium">{listing.authorName}</span>
+                      </div>
+                      <div className="flex gap-2">
+                        {listing.status !== 'approved' && (
+                          <button onClick={() => handleStatusChange(listing.id, 'approved')} className="flex items-center gap-1 text-green-400 hover:text-green-300 transition-colors bg-green-400/10 px-3 py-2 rounded-lg hover:bg-green-400/20" title="Approve">
+                            <CheckCircle className="h-4 w-4" />
+                            <span className="text-xs font-medium">Approve</span>
+                          </button>
                         )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex gap-3">
-                          {listing.status !== 'approved' && (
-                            <button onClick={() => handleStatusChange(listing.id, 'approved')} className="text-green-400 hover:text-green-300 transition-colors bg-green-400/10 p-2 rounded-lg hover:bg-green-400/20" title="Approve">
-                              <CheckCircle className="h-5 w-5" />
-                            </button>
-                          )}
-                          {listing.status !== 'rejected' && (
-                            <button onClick={() => handleStatusChange(listing.id, 'rejected')} className="text-red-400 hover:text-red-300 transition-colors bg-red-400/10 p-2 rounded-lg hover:bg-red-400/20" title="Reject">
-                              <XCircle className="h-5 w-5" />
-                            </button>
-                          )}
-                          <button onClick={() => handleToggleFeatured(listing.id, listing.featured)} className={`${listing.featured ? 'text-yellow-400 bg-yellow-400/10' : 'text-gray-400 bg-gray-700/50'} hover:text-yellow-300 transition-colors p-2 rounded-lg hover:bg-yellow-400/20`} title="Toggle Featured">
-                            <Star className="h-5 w-5" />
+                        {listing.status !== 'rejected' && (
+                          <button onClick={() => handleStatusChange(listing.id, 'rejected')} className="flex items-center gap-1 text-red-400 hover:text-red-300 transition-colors bg-red-400/10 px-3 py-2 rounded-lg hover:bg-red-400/20" title="Reject">
+                            <XCircle className="h-4 w-4" />
+                            <span className="text-xs font-medium">Reject</span>
                           </button>
-                          <button onClick={() => handleDeleteListing(listing.id)} className="text-red-400 hover:text-red-300 transition-colors bg-red-400/10 p-2 rounded-lg hover:bg-red-400/20 ml-2" title="Delete">
-                            <Trash2 className="h-5 w-5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        )}
+                        <button onClick={() => handleToggleFeatured(listing.id, listing.featured)} className={`${listing.featured ? 'text-blue-400 bg-blue-400/10' : 'text-gray-400 bg-gray-700/50'} hover:text-blue-300 transition-colors p-2 rounded-lg hover:bg-blue-400/20`} title="Toggle Featured">
+                          <Star className="h-5 w-5" />
+                        </button>
+                        <button onClick={() => handleDeleteListing(listing.id)} className="text-red-400 hover:text-red-300 transition-colors bg-red-400/10 p-2 rounded-lg hover:bg-red-400/20" title="Delete">
+                          <Trash2 className="h-5 w-5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {filteredListings.length === 0 && (
+                <div className="col-span-full text-center py-12 text-gray-400">
+                  No listings found for the selected status.
+                </div>
+              )}
             </div>
           ) : (
             <div className="overflow-x-auto">

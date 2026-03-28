@@ -19,6 +19,7 @@
       "type": "object",
       "properties": {
         "title": { "type": "string" },
+        "description": { "type": "string" },
         "category": { "type": "string" },
         "city": { "type": "string" },
         "address": { "type": "string" },
@@ -29,9 +30,11 @@
         "featured": { "type": "boolean" },
         "authorId": { "type": "string" },
         "authorName": { "type": "string" },
-        "createdAt": { "type": "number" }
+        "createdAt": { "type": "number" },
+        "averageRating": { "type": "number" },
+        "reviewCount": { "type": "number" }
       },
-      "required": ["title", "category", "city", "address", "price", "contact", "images", "status", "featured", "authorId", "authorName", "createdAt"]
+      "required": ["title", "description", "category", "city", "address", "price", "contact", "images", "status", "featured", "authorId", "authorName", "createdAt"]
     },
     "Review": {
       "title": "Review",

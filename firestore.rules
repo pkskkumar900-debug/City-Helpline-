@@ -45,8 +45,9 @@ service cloud.firestore {
     }
 
     function isValidListing(data) {
-      return hasOnlyAllowedFields(['title', 'category', 'city', 'address', 'price', 'contact', 'images', 'status', 'featured', 'authorId', 'authorName', 'createdAt']) &&
+      return hasOnlyAllowedFields(['title', 'description', 'category', 'city', 'address', 'price', 'contact', 'images', 'status', 'featured', 'authorId', 'authorName', 'createdAt', 'averageRating', 'reviewCount']) &&
              data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.description is string && data.description.size() > 0 && data.description.size() < 5000 &&
              data.category is string && data.category.size() > 0 && data.category.size() < 50 &&
              data.city is string && data.city.size() > 0 && data.city.size() < 100 &&
              data.address is string && data.address.size() > 0 && data.address.size() < 500 &&
@@ -57,7 +58,9 @@ service cloud.firestore {
              data.featured is bool &&
              data.authorId is string && data.authorId.size() > 0 && data.authorId.size() < 100 &&
              data.authorName is string && data.authorName.size() > 0 && data.authorName.size() < 100 &&
-             (data.createdAt is number || data.createdAt is timestamp);
+             (data.createdAt is number || data.createdAt is timestamp) &&
+             (!('averageRating' in data) || (data.averageRating is number && data.averageRating >= 0 && data.averageRating <= 5)) &&
+             (!('reviewCount' in data) || (data.reviewCount is number && data.reviewCount >= 0));
     }
 
     function isValidReview(data) {
@@ -116,7 +119,10 @@ service cloud.firestore {
                         request.resource.data.featured == resource.data.featured &&
                         (request.resource.data.status == 'pending' || request.resource.data.status == resource.data.status)
                       ) || 
-                      isAdmin()
+                      isAdmin() ||
+                      (
+                        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['averageRating', 'reviewCount'])
+                      )
                     );
                     
       allow delete: if isAuthenticated() && (isOwner(resource.data.authorId) || isAdmin());

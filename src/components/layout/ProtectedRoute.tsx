@@ -20,6 +20,10 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
   }
 
   if (allowedRoles && userProfile && !allowedRoles.includes(userProfile.role)) {
+    // Check if it's the default admin email
+    if (currentUser?.email === 'pkskkumar900@gmail.com' && allowedRoles.includes('admin')) {
+      return <>{children}</>;
+    }
     return <Navigate to="/" />;
   }
 
