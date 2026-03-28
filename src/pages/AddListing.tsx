@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { db, storage } from '../lib/firebase';
+import { db } from '../lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { uploadImageToCloudinary } from '../lib/cloudinary';
 import { Listing } from '../types';
 import { UploadCloud, X, ArrowLeft, Tag, MapPin } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -65,12 +65,10 @@ export default function AddListing() {
     setError('');
 
     try {
-      // 1. Upload images to Firebase Storage
+      // 1. Upload images to Cloudinary
       const uploadedImageUrls: string[] = [];
       for (const image of images) {
-        const imageRef = ref(storage, `listings/${currentUser.uid}/${Date.now()}_${image.name}`);
-        const snapshot = await uploadBytes(imageRef, image);
-        const downloadUrl = await getDownloadURL(snapshot.ref);
+        const downloadUrl = await uploadImageToCloudinary(image);
         uploadedImageUrls.push(downloadUrl);
       }
 

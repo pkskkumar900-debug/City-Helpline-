@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { db, storage, auth } from '../lib/firebase';
+import { db, auth } from '../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { uploadImageToCloudinary } from '../lib/cloudinary';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { motion } from 'motion/react';
 import { User, Camera, Moon, Sun, Monitor, Lock, Bell, Shield, FileText, Info, Mail, Code, ChevronRight, LogOut } from 'lucide-react';
@@ -47,9 +47,7 @@ export default function AccountSettings() {
     setMessage({ type: '', text: '' });
 
     try {
-      const storageRef = ref(storage, `profiles/${currentUser.uid}`);
-      await uploadBytes(storageRef, file);
-      const photoURL = await getDownloadURL(storageRef);
+      const photoURL = await uploadImageToCloudinary(file);
       
       await updateDoc(doc(db, 'users', currentUser.uid), {
         photoURL
