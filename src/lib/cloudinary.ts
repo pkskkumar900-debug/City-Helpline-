@@ -1,5 +1,5 @@
 export async function uploadImageToCloudinary(file: File): Promise<string> {
-  const cloudName = 'djpqwrs11';
+  const cloudName = 'dljpqwrs11';
   const uploadPreset = 'cityhelpline_upload';
   const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
@@ -22,6 +22,6 @@ export async function uploadImageToCloudinary(file: File): Promise<string> {
     return data.secure_url;
   } catch (error) {
     console.error('Cloudinary upload error:', error);
-    throw error;
+    throw new Error(error instanceof Error ? error.message : 'Unknown error during image upload');
   }
 }
