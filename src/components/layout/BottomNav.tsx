@@ -1,10 +1,15 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, List, User } from 'lucide-react';
+import { Home, Search, List, User, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function BottomNav() {
   const location = useLocation();
   const path = location.pathname;
+  const { currentUser, userProfile } = useAuth();
+  
+  const isDefaultAdmin = currentUser?.email === 'pkskkumar900@gmail.com';
+  const isAdmin = userProfile?.role === 'admin' || isDefaultAdmin;
 
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
@@ -12,6 +17,10 @@ export function BottomNav() {
     { icon: List, label: 'Listings', path: '/add-listing' },
     { icon: User, label: 'Profile', path: '/profile' },
   ];
+
+  if (isAdmin) {
+    navItems.splice(3, 0, { icon: ShieldCheck, label: 'Admin', path: '/admin' });
+  }
 
   return (
     <div className="md:hidden fixed bottom-0 w-full glass-bottom-nav z-50 pb-safe">

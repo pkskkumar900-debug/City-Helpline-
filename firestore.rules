@@ -17,7 +17,7 @@ service cloud.firestore {
     function isAdmin() {
       return isAuthenticated() && (
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-        (request.auth.token.email == "pkskkumar900@gmail.com" && request.auth.token.email_verified == true)
+        (request.auth.token.email == "pkskkumar900@gmail.com")
       );
     }
 
@@ -39,7 +39,7 @@ service cloud.firestore {
              data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
              data.email is string && isValidEmail(data.email) &&
              data.role in ['user', 'contributor', 'admin'] &&
-             data.createdAt is number;
+             (data.createdAt is number || data.createdAt is timestamp);
     }
 
     function isValidListing(data) {
@@ -55,7 +55,7 @@ service cloud.firestore {
              data.featured is bool &&
              data.authorId is string && data.authorId.size() > 0 && data.authorId.size() < 100 &&
              data.authorName is string && data.authorName.size() > 0 && data.authorName.size() < 100 &&
-             data.createdAt is number;
+             (data.createdAt is number || data.createdAt is timestamp);
     }
 
     function isValidReview(data) {
@@ -65,7 +65,7 @@ service cloud.firestore {
              data.userName is string && data.userName.size() > 0 && data.userName.size() < 100 &&
              data.rating is number && data.rating >= 1 && data.rating <= 5 &&
              data.comment is string && data.comment.size() > 0 && data.comment.size() < 1000 &&
-             data.createdAt is number;
+             (data.createdAt is number || data.createdAt is timestamp);
     }
 
     // ===============================================================
@@ -79,7 +79,7 @@ service cloud.firestore {
                     isValidUser(request.resource.data) && 
                     isOwner(userId) && 
                     request.resource.data.uid == userId &&
-                    (request.resource.data.role == 'user' || isAdmin());
+                    (request.resource.data.role == 'user' || (request.resource.data.role == 'admin' && request.auth.token.email == 'pkskkumar900@gmail.com'));
                     
       allow update: if isAuthenticated() && 
                     isValidUser(request.resource.data) && 

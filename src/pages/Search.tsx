@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, getDocs, orderBy, where } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Listing } from '../types';
 import { Search as SearchIcon, MapPin, Tag } from 'lucide-react';
@@ -22,10 +22,14 @@ export default function Search() {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const q = query(collection(db, 'listings'), orderBy('createdAt', 'desc'));
+        const q = query(
+          collection(db, 'listings'), 
+          where('status', '==', 'approved'),
+          orderBy('createdAt', 'desc')
+        );
         const snapshot = await getDocs(q);
         const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Listing));
-        setListings(data.filter(l => l.status === 'approved'));
+        setListings(data);
       } catch (error) {
         console.error('Error fetching listings:', error);
       } finally {

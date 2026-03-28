@@ -1,10 +1,20 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import firebaseConfig from '../../firebase-applet-config.json';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDfgfEto73uWXUaHrrVglJKe6_EIf6C3Qk",
+  authDomain: "city-helpline-47c96.firebaseapp.com",
+  projectId: "city-helpline-47c96",
+  storageBucket: "city-helpline-47c96.firebasestorage.app",
+  messagingSenderId: "899952350045",
+  appId: "1:899952350045:web:975ab1a4d749bfdce00eb4",
+  measurementId: "G-1V9T3KLP46"
+};
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const googleProvider = new GoogleAuthProvider();
+export const db = getFirestore(app);
 export const storage = getStorage(app);

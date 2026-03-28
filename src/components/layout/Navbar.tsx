@@ -13,6 +13,8 @@ export function Navbar() {
   };
 
   const isActive = (path: string) => location.pathname === path;
+  const isDefaultAdmin = currentUser?.email === 'pkskkumar900@gmail.com';
+  const isAdmin = userProfile?.role === 'admin' || isDefaultAdmin;
 
   return (
     <nav className="hidden md:block glass-nav sticky top-0 z-50">
@@ -51,7 +53,7 @@ export function Navbar() {
                   <span className="hidden sm:inline">Add Listing</span>
                 </Link>
                 
-                {userProfile?.role === 'admin' && (
+                {isAdmin && (
                   <Link
                     to="/admin"
                     className={`flex items-center gap-2 text-sm font-medium transition-colors ${isActive('/admin') ? 'text-blue-400' : 'text-gray-300 hover:text-blue-400'}`}

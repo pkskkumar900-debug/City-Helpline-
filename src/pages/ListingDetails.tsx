@@ -30,6 +30,8 @@ export default function ListingDetails() {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           setListing({ id: docSnap.id, ...docSnap.data() } as Listing);
+        } else {
+          setListing(null);
         }
 
         // Fetch Reviews
@@ -41,8 +43,11 @@ export default function ListingDetails() {
         const reviewSnap = await getDocs(q);
         const fetchedReviews = reviewSnap.docs.map(d => ({ id: d.id, ...d.data() })) as Review[];
         setReviews(fetchedReviews);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching details:", error);
+        if (error.code === 'permission-denied') {
+          setListing(null);
+        }
       } finally {
         setLoading(false);
       }

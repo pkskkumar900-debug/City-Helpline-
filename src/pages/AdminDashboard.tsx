@@ -2,16 +2,23 @@ import { useState, useEffect } from 'react';
 import { collection, query, getDocs, doc, updateDoc, deleteDoc, orderBy } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Listing, UserProfile } from '../types';
+import { useAuth } from '../contexts/AuthContext';
+import { Navigate } from 'react-router-dom';
+
 import { CheckCircle, XCircle, Trash2, Star, Users, Building, Shield } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function AdminDashboard() {
+  const { currentUser, userProfile } = useAuth();
   const [listings, setListings] = useState<Listing[]>([]);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'listings' | 'users'>('listings');
 
   const fetchData = async () => {
+    const isDefaultAdmin = currentUser?.email === 'pkskkumar900@gmail.com';
+    if (!currentUser || (userProfile?.role !== 'admin' && !isDefaultAdmin)) return;
+
     setLoading(true);
     try {
       // Fetch Listings
@@ -31,8 +38,10 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (currentUser && (userProfile?.role === 'admin' || currentUser.email === 'pkskkumar900@gmail.com')) {
+      fetchData();
+    }
+  }, [currentUser, userProfile]);
 
   const handleStatusChange = async (id: string, status: 'approved' | 'rejected') => {
     try {
@@ -70,6 +79,11 @@ export default function AdminDashboard() {
       console.error("Error updating role:", error);
     }
   };
+
+  const isDefaultAdmin = currentUser?.email === 'pkskkumar900@gmail.com';
+  if (!currentUser || (userProfile?.role !== 'admin' && !isDefaultAdmin)) {
+    return <Navigate to="/" />;
+  }
 
   if (loading) {
     return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>;
