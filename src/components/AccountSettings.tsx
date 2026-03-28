@@ -293,8 +293,29 @@ export default function AccountSettings() {
               </div>
               <ChevronRight className="h-4 w-4 text-gray-400 group-open:rotate-90 transition-transform" />
             </summary>
-            <div className="p-4 pt-0 text-sm text-gray-400 border-t border-gray-700/50 mt-2">
-              City Helpline respects user privacy and does not share personal data. Data is securely stored using Firebase.
+            <div className="p-4 pt-0 text-sm text-gray-400 border-t border-gray-700/50 mt-2 space-y-3">
+              <p className="font-medium text-white mt-2">Privacy Policy – City Helpline</p>
+              <p>City Helpline respects your privacy and is committed to protecting your personal information.</p>
+              
+              <p className="font-medium text-white">Information We Collect:</p>
+              <p>We may collect basic user information such as name, email address, and data submitted through listings.</p>
+              
+              <p className="font-medium text-white">How We Use Your Data:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>To provide and improve our services</li>
+                <li>To display user-submitted listings</li>
+                <li>To communicate important updates</li>
+              </ul>
+              
+              <p className="font-medium text-white">Data Protection:</p>
+              <p>We do not sell or share your personal data with third parties. Your data is securely stored using Firebase services.</p>
+              
+              <p className="font-medium text-white">User Responsibility:</p>
+              <p>Users are responsible for the accuracy of the information they submit.</p>
+              
+              <p className="font-medium text-white">Contact:</p>
+              <p>For any privacy-related queries, contact us at:<br/>
+              <a href="mailto:imprince.dev@gmail.com" className="text-blue-400 hover:underline">imprince.dev@gmail.com</a></p>
             </div>
           </details>
 
@@ -306,8 +327,35 @@ export default function AccountSettings() {
               </div>
               <ChevronRight className="h-4 w-4 text-gray-400 group-open:rotate-90 transition-transform" />
             </summary>
-            <div className="p-4 pt-0 text-sm text-gray-400 border-t border-gray-700/50 mt-2">
-              Users must provide genuine data. Admin has rights to remove any listing. Platform is not responsible for third-party services.
+            <div className="p-4 pt-0 text-sm text-gray-400 border-t border-gray-700/50 mt-2 space-y-3">
+              <p className="font-medium text-white mt-2">Terms & Conditions – City Helpline</p>
+              <p>By using City Helpline, you agree to the following terms:</p>
+              
+              <p className="font-medium text-white">Usage:</p>
+              <p>This platform is intended for students to find and share local resources such as PGs, hostels, mess, libraries, and coaching centers.</p>
+              
+              <p className="font-medium text-white">User Content:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Users can submit listings</li>
+                <li>All information must be accurate and genuine</li>
+                <li>Spam or fake data is strictly prohibited</li>
+              </ul>
+              
+              <p className="font-medium text-white">Admin Rights:</p>
+              <p>City Helpline reserves the right to remove or modify any content without prior notice.</p>
+              
+              <p className="font-medium text-white">Limitation of Liability:</p>
+              <p>We are not responsible for any loss or issues caused by third-party listings.</p>
+              
+              <p className="font-medium text-white">Account Policy:</p>
+              <p>Accounts may be suspended if any misuse or violation is detected.</p>
+              
+              <p className="font-medium text-white">Changes:</p>
+              <p>We may update these terms at any time without prior notice.</p>
+              
+              <p className="font-medium text-white">Contact:</p>
+              <p>For support, email:<br/>
+              <a href="mailto:imprince.dev@gmail.com" className="text-blue-400 hover:underline">imprince.dev@gmail.com</a></p>
             </div>
           </details>
 
@@ -319,8 +367,13 @@ export default function AccountSettings() {
               </div>
               <ChevronRight className="h-4 w-4 text-gray-400 group-open:rotate-90 transition-transform" />
             </summary>
-            <div className="p-4 pt-0 text-sm text-gray-400 border-t border-gray-700/50 mt-2">
-              Developed by Prince Kushwaha (AI Developer & Trader)
+            <div className="p-4 pt-0 text-sm text-gray-400 border-t border-gray-700/50 mt-2 space-y-3">
+              <p className="font-medium text-white mt-2">About the Developer</p>
+              <p>City Helpline is developed by Prince Kushwaha, an AI Developer and Professional Trader.</p>
+              <p>This platform is built to simplify student life by providing easy access to local resources and services.</p>
+              <p>Built with ❤️ in India</p>
+              <p>For support or collaboration:<br/>
+              Email: <a href="mailto:imprince.dev@gmail.com" className="text-blue-400 hover:underline">imprince.dev@gmail.com</a></p>
             </div>
           </details>
 
@@ -328,12 +381,14 @@ export default function AccountSettings() {
             <summary className="flex items-center justify-between p-4 cursor-pointer font-medium text-white">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-gray-400" />
-                Support
+                Support Information
               </div>
               <ChevronRight className="h-4 w-4 text-gray-400 group-open:rotate-90 transition-transform" />
             </summary>
-            <div className="p-4 pt-0 text-sm text-gray-400 border-t border-gray-700/50 mt-2">
-              Email: imprince.dev@gmail.com
+            <div className="p-4 pt-0 text-sm text-gray-400 border-t border-gray-700/50 mt-2 space-y-3">
+              <p className="font-medium text-white mt-2">Support Information</p>
+              <p>For support or collaboration:<br/>
+              Email: <a href="mailto:imprince.dev@gmail.com" className="text-blue-400 hover:underline">imprince.dev@gmail.com</a></p>
             </div>
           </details>
         </div>
@@ -348,6 +403,13 @@ export default function AccountSettings() {
           <LogOut className="h-5 w-5" />
           Log Out
         </button>
+      </div>
+
+      {/* Footer */}
+      <div className="mt-12 pt-6 border-t border-gray-800 text-center pb-8">
+        <p className="text-sm text-gray-500">
+          © 2026 City Helpline | Developed by Prince Kushwaha | Support: <a href="mailto:imprince.dev@gmail.com" className="text-blue-400 hover:underline">imprince.dev@gmail.com</a>
+        </p>
       </div>
     </div>
   );
