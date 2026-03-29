@@ -8,6 +8,7 @@ import { Navigate, Link } from 'react-router-dom';
 import { CheckCircle, XCircle, Trash2, Star, Users, Building, Shield, Search, Ban, Edit } from 'lucide-react';
 import { motion } from 'motion/react';
 import { CATEGORIES, STATE_CITIES } from '../lib/constants';
+import { toast } from 'sonner';
 
 export default function AdminDashboard() {
   const { currentUser, userProfile } = useAuth();
@@ -54,8 +55,10 @@ export default function AdminDashboard() {
     try {
       await updateDoc(doc(db, 'listings', id), { status });
       setListings(listings.map(l => l.id === id ? { ...l, status } : l));
+      toast.success(`Listing ${status} successfully`);
     } catch (error) {
       console.error("Error updating status:", error);
+      toast.error("Failed to update status");
     }
   };
 
@@ -63,46 +66,76 @@ export default function AdminDashboard() {
     try {
       await updateDoc(doc(db, 'listings', id), { featured: !currentFeatured });
       setListings(listings.map(l => l.id === id ? { ...l, featured: !currentFeatured } : l));
+      toast.success(`Listing ${!currentFeatured ? 'featured' : 'unfeatured'} successfully`);
     } catch (error) {
       console.error("Error toggling featured:", error);
+      toast.error("Failed to toggle featured status");
     }
   };
 
   const handleDeleteListing = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this listing?')) return;
-    try {
-      await deleteDoc(doc(db, 'listings', id));
-      setListings(listings.filter(l => l.id !== id));
-    } catch (error) {
-      console.error("Error deleting listing:", error);
-    }
+    toast('Are you sure you want to delete this listing?', {
+      action: {
+        label: 'Delete',
+        onClick: async () => {
+          try {
+            await deleteDoc(doc(db, 'listings', id));
+            setListings(listings.filter(l => l.id !== id));
+            toast.success("Listing deleted successfully");
+          } catch (error) {
+            console.error("Error deleting listing:", error);
+            toast.error("Failed to delete listing");
+          }
+        }
+      },
+      cancel: {
+        label: 'Cancel',
+        onClick: () => {}
+      }
+    });
   };
 
   const handleRoleChange = async (uid: string, newRole: string) => {
     try {
       await updateDoc(doc(db, 'users', uid), { role: newRole });
       setUsers(users.map(u => u.uid === uid ? { ...u, role: newRole as any } : u));
+      toast.success(`User role updated to ${newRole}`);
     } catch (error) {
       console.error("Error updating role:", error);
+      toast.error("Failed to update user role");
     }
   };
 
   const handleDeleteUser = async (uid: string) => {
-    if (!window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
-    try {
-      await deleteDoc(doc(db, 'users', uid));
-      setUsers(users.filter(u => u.uid !== uid));
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
+    toast('Are you sure you want to delete this user? This action cannot be undone.', {
+      action: {
+        label: 'Delete',
+        onClick: async () => {
+          try {
+            await deleteDoc(doc(db, 'users', uid));
+            setUsers(users.filter(u => u.uid !== uid));
+            toast.success("User deleted successfully");
+          } catch (error) {
+            console.error("Error deleting user:", error);
+            toast.error("Failed to delete user");
+          }
+        }
+      },
+      cancel: {
+        label: 'Cancel',
+        onClick: () => {}
+      }
+    });
   };
 
   const handleBanUser = async (uid: string, currentBanned: boolean) => {
     try {
       await updateDoc(doc(db, 'users', uid), { banned: !currentBanned });
       setUsers(users.map(u => u.uid === uid ? { ...u, banned: !currentBanned } : u));
+      toast.success(`User ${!currentBanned ? 'banned' : 'unbanned'} successfully`);
     } catch (error) {
       console.error("Error banning user:", error);
+      toast.error("Failed to update user ban status");
     }
   };
 
@@ -144,87 +177,119 @@ export default function AdminDashboard() {
       className="min-h-screen bg-[#0B0E14] pb-20 md:pb-12"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="p-2.5 bg-blue-600/20 rounded-lg border border-blue-500/30">
-            <Shield className="h-6 w-6 text-blue-400" />
+        <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl shadow-lg shadow-blue-500/20">
+              <Shield className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 tracking-tight">Admin Dashboard</h1>
+              <p className="text-gray-400 text-sm font-medium mt-1">Manage your platform's content and users</p>
+            </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-100">Admin Dashboard</h1>
+          <div className="hidden sm:flex items-center gap-4 bg-gray-900/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-gray-800">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center overflow-hidden">
+              {userProfile?.photoURL ? (
+                <img src={userProfile.photoURL} alt="Admin" className="h-full w-full object-cover" />
+              ) : (
+                <span className="text-white font-bold">{userProfile?.name?.charAt(0) || 'A'}</span>
+              )}
+            </div>
+            <div>
+              <p className="text-sm font-bold text-white">{userProfile?.name || 'Admin'}</p>
+              <p className="text-xs text-blue-400 font-medium">System Administrator</p>
+            </div>
+          </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
           <motion.div 
-            initial={{ y: 10, opacity: 0 }}
+            initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="bg-[#151A23] border border-gray-800/60 p-5 rounded-xl flex items-center gap-4"
+            className="glass-card rounded-3xl p-6 relative overflow-hidden group"
           >
-            <div className="p-3 bg-blue-500/10 text-blue-400 rounded-lg">
-              <Building className="h-6 w-6" />
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-colors"></div>
+            <div className="flex items-center justify-between mb-4 relative z-10">
+              <div className="p-3 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20">
+                <Building className="h-6 w-6" />
+              </div>
+              <span className="text-xs font-bold text-green-400 bg-green-500/10 px-2 py-1 rounded-lg">+12%</span>
             </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Listings</p>
-              <p className="text-2xl font-bold text-gray-100">{listings.length}</p>
+            <div className="relative z-10">
+              <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Total Listings</p>
+              <p className="text-4xl font-extrabold text-white">{listings.length}</p>
             </div>
           </motion.div>
           
           <motion.div 
-            initial={{ y: 10, opacity: 0 }}
+            initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="bg-[#151A23] border border-gray-800/60 p-5 rounded-xl flex items-center gap-4"
+            className="glass-card rounded-3xl p-6 relative overflow-hidden group"
           >
-            <div className="p-3 bg-yellow-500/10 text-yellow-400 rounded-lg">
-              <CheckCircle className="h-6 w-6" />
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl group-hover:bg-yellow-500/20 transition-colors"></div>
+            <div className="flex items-center justify-between mb-4 relative z-10">
+              <div className="p-3 bg-yellow-500/10 text-yellow-400 rounded-xl border border-yellow-500/20">
+                <CheckCircle className="h-6 w-6" />
+              </div>
+              {pendingCount > 0 && <span className="text-xs font-bold text-yellow-400 bg-yellow-500/10 px-2 py-1 rounded-lg">Action Needed</span>}
             </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Pending</p>
-              <p className="text-2xl font-bold text-gray-100">{pendingCount}</p>
+            <div className="relative z-10">
+              <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Pending Approval</p>
+              <p className="text-4xl font-extrabold text-white">{pendingCount}</p>
             </div>
           </motion.div>
           
           <motion.div 
-            initial={{ y: 10, opacity: 0 }}
+            initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="bg-[#151A23] border border-gray-800/60 p-5 rounded-xl flex items-center gap-4"
+            className="glass-card rounded-3xl p-6 relative overflow-hidden group"
           >
-            <div className="p-3 bg-green-500/10 text-green-400 rounded-lg">
-              <Users className="h-6 w-6" />
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-colors"></div>
+            <div className="flex items-center justify-between mb-4 relative z-10">
+              <div className="p-3 bg-green-500/10 text-green-400 rounded-xl border border-green-500/20">
+                <Users className="h-6 w-6" />
+              </div>
             </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Users</p>
-              <p className="text-2xl font-bold text-gray-100">{users.length}</p>
+            <div className="relative z-10">
+              <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Total Users</p>
+              <p className="text-4xl font-extrabold text-white">{users.length}</p>
             </div>
           </motion.div>
 
           <motion.div 
-            initial={{ y: 10, opacity: 0 }}
+            initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="bg-[#151A23] border border-gray-800/60 p-5 rounded-xl flex items-center gap-4"
+            className="glass-card rounded-3xl p-6 relative overflow-hidden group"
           >
-            <div className="p-3 bg-purple-500/10 text-purple-400 rounded-lg">
-              <Star className="h-6 w-6" />
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-colors"></div>
+            <div className="flex items-center justify-between mb-4 relative z-10">
+              <div className="p-3 bg-purple-500/10 text-purple-400 rounded-xl border border-purple-500/20">
+                <Star className="h-6 w-6" />
+              </div>
             </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Contributors</p>
-              <p className="text-2xl font-bold text-gray-100">{contributorsCount}</p>
+            <div className="relative z-10">
+              <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Contributors</p>
+              <p className="text-4xl font-extrabold text-white">{contributorsCount}</p>
             </div>
           </motion.div>
         </div>
 
         {/* Tabs */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-gray-800/60 pb-4">
-          <div className="flex gap-6">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+          <div className="flex bg-gray-900/80 backdrop-blur-md p-1.5 rounded-2xl border border-gray-800">
             <button
-              className={`pb-4 -mb-[17px] font-medium text-sm transition-all border-b-2 ${activeTab === 'listings' ? 'border-blue-500 text-blue-400' : 'border-transparent text-gray-400 hover:text-gray-200'}`}
+              className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${activeTab === 'listings' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
               onClick={() => setActiveTab('listings')}
             >
               Manage Listings
             </button>
             <button
-              className={`pb-4 -mb-[17px] font-medium text-sm transition-all border-b-2 ${activeTab === 'users' ? 'border-blue-500 text-blue-400' : 'border-transparent text-gray-400 hover:text-gray-200'}`}
+              className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${activeTab === 'users' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
               onClick={() => setActiveTab('users')}
             >
               Manage Users
@@ -232,169 +297,183 @@ export default function AdminDashboard() {
           </div>
           
           {activeTab === 'listings' && (
-            <div className="flex items-center gap-3">
-              <Link
-                to="/add-listing"
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition-colors"
-              >
-                + Create Listing
-              </Link>
-              <div className="flex bg-[#1A202C] rounded-lg p-1 border border-gray-800/60">
+            <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+              <div className="flex bg-gray-900/80 backdrop-blur-md rounded-xl p-1.5 border border-gray-800 flex-grow lg:flex-grow-0">
                 <button
                   onClick={() => setStatusFilter('all')}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${statusFilter === 'all' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'}`}
+                  className={`flex-1 lg:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${statusFilter === 'all' ? 'bg-gray-700 text-white shadow-md' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
                 >
                   All
                 </button>
                 <button
                   onClick={() => setStatusFilter('pending')}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${statusFilter === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : 'text-gray-400 hover:text-white'}`}
+                  className={`flex-1 lg:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${statusFilter === 'pending' ? 'bg-yellow-500/20 text-yellow-400 shadow-md border border-yellow-500/20' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
                 >
                   Pending
                 </button>
                 <button
                   onClick={() => setStatusFilter('approved')}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${statusFilter === 'approved' ? 'bg-green-500/20 text-green-400' : 'text-gray-400 hover:text-white'}`}
+                  className={`flex-1 lg:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${statusFilter === 'approved' ? 'bg-green-500/20 text-green-400 shadow-md border border-green-500/20' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
                 >
                   Approved
                 </button>
                 <button
                   onClick={() => setStatusFilter('rejected')}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${statusFilter === 'rejected' ? 'bg-red-500/20 text-red-400' : 'text-gray-400 hover:text-white'}`}
+                  className={`flex-1 lg:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${statusFilter === 'rejected' ? 'bg-red-500/20 text-red-400 shadow-md border border-red-500/20' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
                 >
                   Rejected
                 </button>
               </div>
+              <Link
+                to="/add-listing"
+                className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-sm font-bold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/25 hover:scale-105 whitespace-nowrap"
+              >
+                + Create Listing
+              </Link>
             </div>
           )}
         </div>
 
         {/* Search and Filters */}
-        <div className="mb-6">
+        <div className="mb-8">
           {activeTab === 'listings' ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Search listings..."
-                  value={listingSearch}
-                  onChange={(e) => setListingSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-[#151A23] border border-gray-800/60 rounded-lg text-gray-200 placeholder-gray-500 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                <div className="relative flex items-center bg-gray-900/80 rounded-xl border border-gray-700/50 backdrop-blur-xl">
+                  <Search className="absolute left-4 h-5 w-5 text-gray-400 group-focus-within:text-blue-400 transition-colors" />
+                  <input
+                    type="text"
+                    placeholder="Search listings..."
+                    value={listingSearch}
+                    onChange={(e) => setListingSearch(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3 text-sm bg-transparent text-white placeholder-gray-500 focus:outline-none focus:ring-0 rounded-xl"
+                  />
+                </div>
               </div>
-              <select
-                value={listingCategory}
-                onChange={(e) => setListingCategory(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-[#151A23] border border-gray-800/60 text-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-              >
-                <option value="">All Categories</option>
-                {CATEGORIES.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-              <select
-                value={listingCity}
-                onChange={(e) => setListingCity(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-[#151A23] border border-gray-800/60 text-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-              >
-                <option value="">All Cities</option>
-                {cityOptions.map(city => (
-                  <option key={city} value={city}>{city}</option>
-                ))}
-              </select>
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                <select
+                  value={listingCategory}
+                  onChange={(e) => setListingCategory(e.target.value)}
+                  className="relative w-full px-4 py-3 text-sm bg-gray-900/80 border border-gray-700/50 text-white rounded-xl focus:outline-none focus:ring-0 appearance-none backdrop-blur-xl"
+                >
+                  <option value="">All Categories</option>
+                  {CATEGORIES.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                <select
+                  value={listingCity}
+                  onChange={(e) => setListingCity(e.target.value)}
+                  className="relative w-full px-4 py-3 text-sm bg-gray-900/80 border border-gray-700/50 text-white rounded-xl focus:outline-none focus:ring-0 appearance-none backdrop-blur-xl"
+                >
+                  <option value="">All Cities</option>
+                  {cityOptions.map(city => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           ) : (
-            <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-              <input
-                type="text"
-                placeholder="Search users..."
-                value={userSearch}
-                onChange={(e) => setUserSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 text-sm bg-[#151A23] border border-gray-800/60 rounded-lg text-gray-200 placeholder-gray-500 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-              />
+            <div className="relative max-w-md group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+              <div className="relative flex items-center bg-gray-900/80 rounded-xl border border-gray-700/50 backdrop-blur-xl">
+                <Search className="absolute left-4 h-5 w-5 text-gray-400 group-focus-within:text-blue-400 transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Search users by name or email..."
+                  value={userSearch}
+                  onChange={(e) => setUserSearch(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 text-sm bg-transparent text-white placeholder-gray-500 focus:outline-none focus:ring-0 rounded-xl"
+                />
+              </div>
             </div>
           )}
         </div>
 
         {/* Content */}
         <motion.div 
-          initial={{ y: 10, opacity: 0 }}
+          initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="bg-[#151A23] border border-gray-800/60 rounded-xl overflow-hidden"
+          className="glass-card rounded-3xl overflow-hidden border border-gray-800/60 shadow-2xl"
         >
           {activeTab === 'listings' ? (
             <div className="overflow-x-auto">
               <table className="min-w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-[#1A202C] border-b border-gray-800/60">
-                    <th className="py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Listing</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Category</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">City</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
+                  <tr className="bg-gray-900/80 border-b border-gray-800/60">
+                    <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Listing</th>
+                    <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Category</th>
+                    <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">City</th>
+                    <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Status</th>
+                    <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-800/60">
+                <tbody className="divide-y divide-gray-800/60 bg-gray-900/30">
                   {filteredListings.map((listing) => (
-                    <tr key={listing.id} className="hover:bg-gray-800/20 transition-colors">
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded bg-gray-800 flex-shrink-0 overflow-hidden">
+                    <tr key={listing.id} className="hover:bg-gray-800/40 transition-colors group">
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-4">
+                          <div className="h-12 w-12 rounded-xl bg-gray-800 flex-shrink-0 overflow-hidden border border-gray-700/50">
                             {listing.images && listing.images.length > 0 ? (
                               <img src={listing.images[0]} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
                             ) : (
-                              <Building className="h-5 w-5 m-2.5 text-gray-600" />
+                              <Building className="h-6 w-6 m-3 text-gray-600" />
                             )}
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-gray-200 line-clamp-1">{listing.title}</p>
-                            <p className="text-xs text-gray-500">by {listing.authorName}</p>
+                            <p className="text-sm font-bold text-white line-clamp-1 group-hover:text-blue-400 transition-colors">{listing.title}</p>
+                            <p className="text-xs font-medium text-gray-500 mt-0.5">by {listing.authorName}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-400">
+                      <td className="py-4 px-6 text-sm font-medium text-gray-300">
                         {listing.category}
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-400">
+                      <td className="py-4 px-6 text-sm font-medium text-gray-300">
                         {listing.city}
                       </td>
-                      <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                          listing.status === 'approved' ? 'bg-green-500/10 text-green-400' : 
-                          listing.status === 'rejected' ? 'bg-red-500/10 text-red-400' : 
-                          'bg-yellow-500/10 text-yellow-400'
-                        }`}>
-                          {listing.status.charAt(0).toUpperCase() + listing.status.slice(1)}
-                        </span>
-                        {listing.featured && (
-                          <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-500/10 text-blue-400">
-                            Featured
+                      <td className="py-4 px-6">
+                        <div className="flex flex-col gap-2 items-start">
+                          <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider ${
+                            listing.status === 'approved' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 
+                            listing.status === 'rejected' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 
+                            'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+                          }`}>
+                            {listing.status}
                           </span>
-                        )}
+                          {listing.featured && (
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-blue-400 border border-blue-500/20">
+                              Featured
+                            </span>
+                          )}
+                        </div>
                       </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
+                      <td className="py-4 px-6">
+                        <div className="flex items-center justify-end gap-2">
                           {listing.status !== 'approved' && (
-                            <button onClick={() => handleStatusChange(listing.id, 'approved')} className="p-1.5 text-green-400 hover:bg-green-500/10 rounded transition-colors" title="Approve">
-                              <CheckCircle className="h-4 w-4" />
+                            <button onClick={() => handleStatusChange(listing.id, 'approved')} className="p-2 text-green-400 hover:bg-green-500/20 rounded-xl transition-all hover:scale-110" title="Approve">
+                              <CheckCircle className="h-5 w-5" />
                             </button>
                           )}
                           {listing.status !== 'rejected' && (
-                            <button onClick={() => handleStatusChange(listing.id, 'rejected')} className="p-1.5 text-red-400 hover:bg-red-500/10 rounded transition-colors" title="Reject">
-                              <XCircle className="h-4 w-4" />
+                            <button onClick={() => handleStatusChange(listing.id, 'rejected')} className="p-2 text-red-400 hover:bg-red-500/20 rounded-xl transition-all hover:scale-110" title="Reject">
+                              <XCircle className="h-5 w-5" />
                             </button>
                           )}
-                          <button onClick={() => handleToggleFeatured(listing.id, listing.featured)} className={`p-1.5 rounded transition-colors ${listing.featured ? 'text-blue-400 hover:bg-blue-500/10' : 'text-gray-500 hover:bg-gray-800'}`} title="Toggle Featured">
-                            <Star className="h-4 w-4" />
+                          <button onClick={() => handleToggleFeatured(listing.id, listing.featured)} className={`p-2 rounded-xl transition-all hover:scale-110 ${listing.featured ? 'text-blue-400 bg-blue-500/10 border border-blue-500/20' : 'text-gray-400 hover:bg-gray-800'}`} title="Toggle Featured">
+                            <Star className={`h-5 w-5 ${listing.featured ? 'fill-blue-400' : ''}`} />
                           </button>
-                          <Link to={`/edit-listing/${listing.id}`} className="p-1.5 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded transition-colors" title="Edit">
-                            <Edit className="h-4 w-4" />
+                          <Link to={`/edit-listing/${listing.id}`} className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-xl transition-all hover:scale-110" title="Edit">
+                            <Edit className="h-5 w-5" />
                           </Link>
-                          <button onClick={() => handleDeleteListing(listing.id)} className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors" title="Delete">
-                            <Trash2 className="h-4 w-4" />
+                          <button onClick={() => handleDeleteListing(listing.id)} className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all hover:scale-110" title="Delete">
+                            <Trash2 className="h-5 w-5" />
                           </button>
                         </div>
                       </td>
@@ -402,8 +481,17 @@ export default function AdminDashboard() {
                   ))}
                   {filteredListings.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="py-8 text-center text-sm text-gray-500">
-                        No listings found matching your criteria.
+                      <td colSpan={5} className="py-24 text-center">
+                        <div className="flex flex-col items-center justify-center">
+                          <div className="relative mb-4">
+                            <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl animate-pulse"></div>
+                            <div className="h-16 w-16 bg-gray-800/80 backdrop-blur-xl rounded-full flex items-center justify-center border border-gray-700/50 shadow-xl relative z-10">
+                              <Search className="h-8 w-8 text-gray-400" />
+                            </div>
+                          </div>
+                          <p className="text-lg font-bold text-white mb-1">No listings found</p>
+                          <p className="text-sm font-medium text-gray-500">Try adjusting your search or filters.</p>
+                        </div>
                       </td>
                     </tr>
                   )}
@@ -414,59 +502,69 @@ export default function AdminDashboard() {
             <div className="overflow-x-auto">
               <table className="min-w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-[#1A202C] border-b border-gray-800/60">
-                    <th className="py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Name</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">City</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Role</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Joined</th>
-                    <th className="py-3 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
+                  <tr className="bg-gray-900/80 border-b border-gray-800/60">
+                    <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">User</th>
+                    <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Contact</th>
+                    <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Role</th>
+                    <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Joined</th>
+                    <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-800/60">
+                <tbody className="divide-y divide-gray-800/60 bg-gray-900/30">
                   {filteredUsers.map((user) => (
-                    <tr key={user.uid} className={`hover:bg-gray-800/20 transition-colors ${user.banned ? 'opacity-50' : ''}`}>
-                      <td className="py-3 px-4 text-sm font-medium text-gray-200">
-                        <div className="flex items-center gap-2">
-                          {user.name}
-                          {user.banned && <span className="bg-red-500/10 text-red-400 text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider">Banned</span>}
+                    <tr key={user.uid} className={`hover:bg-gray-800/40 transition-colors group ${user.banned ? 'opacity-50 bg-red-900/5' : ''}`}>
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-white font-bold border border-gray-600">
+                            {user.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-white flex items-center gap-2">
+                              {user.name}
+                              {user.banned && <span className="bg-red-500/20 text-red-400 text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider border border-red-500/20">Banned</span>}
+                            </p>
+                          </div>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-400">
-                        {user.email}
+                      <td className="py-4 px-6">
+                        <p className="text-sm font-medium text-gray-300">{user.email}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{user.city || 'No city specified'}</p>
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-400">
-                        {user.city || '-'}
+                      <td className="py-4 px-6">
+                        <div className="relative">
+                          <select
+                            value={user.role}
+                            onChange={(e) => handleRoleChange(user.uid, e.target.value)}
+                            className={`w-full px-3 py-2 text-xs font-bold uppercase tracking-wider rounded-lg border appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all ${
+                              user.role === 'admin' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' :
+                              user.role === 'contributor' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+                              'bg-gray-800 text-gray-300 border-gray-700'
+                            }`}
+                          >
+                            <option value="user">User</option>
+                            <option value="contributor">Contributor</option>
+                            <option value="admin">Admin</option>
+                          </select>
+                        </div>
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-400">
-                        <select
-                          value={user.role}
-                          onChange={(e) => handleRoleChange(user.uid, e.target.value)}
-                          className="w-full px-2 py-1 text-xs bg-[#1A202C] border border-gray-800/60 text-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 rounded transition-all"
-                        >
-                          <option value="user">User</option>
-                          <option value="contributor">Contributor</option>
-                          <option value="admin">Admin</option>
-                        </select>
+                      <td className="py-4 px-6 text-sm font-medium text-gray-400">
+                        {new Date(user.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-400">
-                        {new Date(user.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
+                      <td className="py-4 px-6">
+                        <div className="flex items-center justify-end gap-2">
                           <button 
                             onClick={() => handleBanUser(user.uid, user.banned || false)} 
-                            className={`p-1.5 rounded transition-colors ${user.banned ? 'text-green-400 hover:bg-green-500/10' : 'text-yellow-400 hover:bg-yellow-500/10'}`}
+                            className={`p-2 rounded-xl transition-all hover:scale-110 ${user.banned ? 'text-green-400 bg-green-500/10 border border-green-500/20' : 'text-yellow-400 hover:bg-yellow-500/10'}`}
                             title={user.banned ? "Unban User" : "Ban User"}
                           >
-                            <Ban className="h-4 w-4" />
+                            <Ban className="h-5 w-5" />
                           </button>
                           <button 
                             onClick={() => handleDeleteUser(user.uid)} 
-                            className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
+                            className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all hover:scale-110"
                             title="Delete User"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-5 w-5" />
                           </button>
                         </div>
                       </td>
@@ -474,8 +572,17 @@ export default function AdminDashboard() {
                   ))}
                   {filteredUsers.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="py-8 text-center text-sm text-gray-500">
-                        No users found matching your criteria.
+                      <td colSpan={5} className="py-24 text-center">
+                        <div className="flex flex-col items-center justify-center">
+                          <div className="relative mb-4">
+                            <div className="absolute inset-0 bg-purple-500/20 rounded-full blur-xl animate-pulse"></div>
+                            <div className="h-16 w-16 bg-gray-800/80 backdrop-blur-xl rounded-full flex items-center justify-center border border-gray-700/50 shadow-xl relative z-10">
+                              <Users className="h-8 w-8 text-gray-400" />
+                            </div>
+                          </div>
+                          <p className="text-lg font-bold text-white mb-1">No users found</p>
+                          <p className="text-sm font-medium text-gray-500">Try adjusting your search criteria.</p>
+                        </div>
                       </td>
                     </tr>
                   )}

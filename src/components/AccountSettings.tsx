@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { db, auth } from '../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
-import { uploadImageToCloudinary } from '../lib/cloudinary';
+import { uploadImage } from '../lib/storage';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { motion } from 'motion/react';
 import { User, Camera, Moon, Sun, Monitor, Lock, Bell, Shield, FileText, Info, Mail, Code, ChevronRight, LogOut } from 'lucide-react';
@@ -64,13 +64,14 @@ export default function AccountSettings() {
     setMessage({ type: '', text: '' });
 
     try {
-      const photoURL = await uploadImageToCloudinary(file);
+      const photoURL = await uploadImage(file);
       
-      await updateDoc(doc(db, 'users', currentUser.uid), {
-        photoURL
-      });
-      
-      setMessage({ type: 'success', text: 'Profile photo updated!' });
+      if (photoURL) {
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+          photoURL
+        });
+        setMessage({ type: 'success', text: 'Profile photo updated!' });
+      }
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'Failed to upload photo' });
     } finally {

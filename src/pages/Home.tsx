@@ -63,87 +63,103 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen pb-20 md:pb-12">
+    <div className="min-h-screen pb-20 md:pb-12 bg-[#0B0E14]">
       {/* Hero Section */}
-      <div className="relative overflow-hidden pt-16 pb-32 px-4 sm:px-6 lg:px-8">
+      <div className="relative overflow-hidden pt-24 pb-40 px-4 sm:px-6 lg:px-8">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-600/20 to-transparent"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/40 via-[#0B0E14] to-[#0B0E14]"></div>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] opacity-30 bg-blue-500 blur-[120px] rounded-full pointer-events-none"></div>
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/20 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/20 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>
+          
+          {/* Grid Pattern */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LCAyNTUsIDI1NSwgMC4wNSkiLz48L3N2Zz4=')] opacity-50"></div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-8 backdrop-blur-md">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+              </span>
+              Discover Premium Student Living
+            </div>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-white mb-6 leading-tight">
               Find Your Perfect <br className="hidden md:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500">
                 Student Setup
               </span>
             </h1>
-            <p className="mt-4 text-xl max-w-2xl mx-auto text-gray-300 mb-10">
-              PGs, Hostels, Messes, Libraries, and Coaching centers in your city. All in one place.
+            <p className="mt-6 text-xl md:text-2xl max-w-3xl mx-auto text-gray-400 mb-12 font-light leading-relaxed">
+              PGs, Hostels, Messes, Libraries, and Coaching centers in your city. All in one place, curated for you.
             </p>
           </motion.div>
           
           {/* Search Bar */}
           <motion.form 
             onSubmit={handleSearch}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="max-w-2xl mx-auto glass-card rounded-full p-2 flex items-center shadow-2xl shadow-blue-900/20"
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            className="max-w-3xl mx-auto relative group"
           >
-            <div className="flex-grow flex items-center pl-4">
-              <Search className="h-6 w-6 text-gray-400 mr-3" />
-              <input
-                type="text"
-                placeholder="Search for PGs, libraries, cities..."
-                className="w-full bg-transparent border-none focus:ring-0 text-white placeholder-gray-400 text-lg py-3 outline-none"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+            <div className="relative glass-card rounded-full p-2 flex items-center bg-[#151A23]/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
+              <div className="flex-grow flex items-center pl-6">
+                <Search className="h-6 w-6 text-gray-400 group-focus-within:text-blue-400 transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Search for PGs, libraries, cities..."
+                  className="w-full bg-transparent border-none focus:ring-0 text-white placeholder-gray-500 text-lg py-4 outline-none px-4 font-medium"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <button 
+                type="submit"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-10 py-4 rounded-full font-bold text-lg transition-all shadow-lg shadow-blue-500/25 hover:scale-105 flex items-center gap-2"
+              >
+                Search
+                <ArrowRight className="h-5 w-5" />
+              </button>
             </div>
-            <button 
-              type="submit"
-              className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-8 py-3 rounded-full font-medium transition-all shadow-lg shadow-blue-500/30"
-            >
-              Search
-            </button>
           </motion.form>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-20">
         
         {/* Categories */}
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16"
+          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24"
         >
           {categories.map((cat, index) => {
             const Icon = cat.icon;
             return (
-              <Link to="/search" state={{ category: cat.name }} key={index} className="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:-translate-y-1 transition-transform duration-300 group cursor-pointer">
-                <div className={`p-4 rounded-full ${cat.bg} ${cat.color} mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <Icon className="h-8 w-8" />
+              <Link to="/search" state={{ category: cat.name }} key={index} className="glass-card rounded-3xl p-8 flex flex-col items-center justify-center text-center hover:-translate-y-2 transition-all duration-500 group cursor-pointer border border-gray-800/60 hover:border-gray-700 shadow-xl">
+                <div className={`p-5 rounded-2xl ${cat.bg} ${cat.color} mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg`}>
+                  <Icon className="h-10 w-10" />
                 </div>
-                <h3 className="text-white font-medium">{cat.name}</h3>
+                <h3 className="text-white font-bold text-lg tracking-wide">{cat.name}</h3>
               </Link>
             );
           })}
         </motion.div>
 
         {loading ? (
-          <div className="space-y-8">
+          <div className="space-y-12">
             <div>
-              <div className="h-8 w-48 bg-gray-800 rounded-lg animate-pulse mb-6"></div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map(i => <div key={i} className="glass-card rounded-2xl h-80 animate-pulse"></div>)}
+              <div className="h-10 w-64 bg-gray-800/50 rounded-xl animate-pulse mb-8"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[1, 2, 3].map(i => <div key={i} className="glass-card rounded-3xl h-[400px] animate-pulse border border-gray-800/50"></div>)}
               </div>
             </div>
           </div>
@@ -151,22 +167,27 @@ export default function Home() {
           <>
             {/* Featured Listings */}
             {featuredListings.length > 0 && (
-              <div className="mb-16">
-                <div className="flex justify-between items-end mb-6">
-                  <h2 className="text-3xl font-bold text-white flex items-center gap-3">
-                    <Star className="h-8 w-8 text-yellow-400 fill-yellow-400" /> 
-                    Featured Places
-                  </h2>
-                  <Link to="/search" className="text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1">
-                    View all <ArrowRight className="h-4 w-4" />
+              <div className="mb-24">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 gap-4">
+                  <div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs font-bold uppercase tracking-wider mb-3">
+                      <Star className="h-3 w-3 fill-yellow-400" />
+                      Top Rated
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                      Featured Places
+                    </h2>
+                  </div>
+                  <Link to="/search" className="group flex items-center gap-2 text-sm font-bold text-blue-400 hover:text-blue-300 transition-colors bg-blue-500/10 hover:bg-blue-500/20 px-4 py-2 rounded-xl border border-blue-500/20">
+                    View all <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {featuredListings.map((listing, index) => (
                     <motion.div
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
                       key={listing.id}
                     >
                       <ListingCard listing={listing} />
@@ -177,20 +198,28 @@ export default function Home() {
             )}
 
             {/* Recent Listings */}
-            <div>
-              <div className="flex justify-between items-end mb-6">
-                <h2 className="text-3xl font-bold text-white">Recently Added</h2>
-                <Link to="/search" className="text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1">
-                  View all <ArrowRight className="h-4 w-4" />
+            <div className="mb-20">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 gap-4">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold uppercase tracking-wider mb-3">
+                    <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse"></div>
+                    Fresh Additions
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                    Recently Added
+                  </h2>
+                </div>
+                <Link to="/search" className="group flex items-center gap-2 text-sm font-bold text-blue-400 hover:text-blue-300 transition-colors bg-blue-500/10 hover:bg-blue-500/20 px-4 py-2 rounded-xl border border-blue-500/20">
+                  View all <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
               {recentListings.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {recentListings.map((listing, index) => (
                     <motion.div
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
                       key={listing.id}
                     >
                       <ListingCard listing={listing} />
@@ -198,8 +227,19 @@ export default function Home() {
                   ))}
                 </div>
               ) : (
-                <div className="glass-card rounded-2xl p-12 text-center">
-                  <p className="text-gray-400 text-lg">No listings available right now.</p>
+                <div className="glass-card rounded-3xl p-16 text-center border-dashed border-2 border-gray-700/50 relative overflow-hidden">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                  
+                  <div className="relative z-10 flex flex-col items-center justify-center">
+                    <div className="relative mb-6">
+                      <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 rounded-full blur-xl animate-pulse"></div>
+                      <div className="h-24 w-24 bg-gray-900/80 backdrop-blur-xl rounded-full flex items-center justify-center border border-gray-700/50 shadow-xl relative z-10">
+                        <Search className="h-10 w-10 text-gray-400" />
+                      </div>
+                    </div>
+                    <h3 className="text-2xl font-extrabold text-white mb-3 tracking-tight">No listings yet</h3>
+                    <p className="text-gray-400 max-w-md mx-auto text-base leading-relaxed">Check back later for new places or be the first to add a listing in your area.</p>
+                  </div>
                 </div>
               )}
             </div>
