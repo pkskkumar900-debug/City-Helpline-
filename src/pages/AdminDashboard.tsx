@@ -3,10 +3,11 @@ import { collection, query, getDocs, doc, updateDoc, deleteDoc, orderBy } from '
 import { db } from '../lib/firebase';
 import { Listing, UserProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 
-import { CheckCircle, XCircle, Trash2, Star, Users, Building, Shield } from 'lucide-react';
+import { CheckCircle, XCircle, Trash2, Star, Users, Building, Shield, Search, Ban, Edit } from 'lucide-react';
 import { motion } from 'motion/react';
+import { CATEGORIES, STATE_CITIES } from '../lib/constants';
 
 export default function AdminDashboard() {
   const { currentUser, userProfile } = useAuth();
@@ -15,6 +16,11 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'listings' | 'users'>('listings');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  
+  const [listingSearch, setListingSearch] = useState('');
+  const [listingCity, setListingCity] = useState('');
+  const [listingCategory, setListingCategory] = useState('');
+  const [userSearch, setUserSearch] = useState('');
 
   const fetchData = async () => {
     const isDefaultAdmin = currentUser?.email === 'pkskkumar900@gmail.com';
@@ -81,6 +87,25 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleDeleteUser = async (uid: string) => {
+    if (!window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
+    try {
+      await deleteDoc(doc(db, 'users', uid));
+      setUsers(users.filter(u => u.uid !== uid));
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+  const handleBanUser = async (uid: string, currentBanned: boolean) => {
+    try {
+      await updateDoc(doc(db, 'users', uid), { banned: !currentBanned });
+      setUsers(users.map(u => u.uid === uid ? { ...u, banned: !currentBanned } : u));
+    } catch (error) {
+      console.error("Error banning user:", error);
+    }
+  };
+
   const isDefaultAdmin = currentUser?.email === 'pkskkumar900@gmail.com';
   if (!currentUser || (userProfile?.role !== 'admin' && !isDefaultAdmin)) {
     return <Navigate to="/" />;
@@ -91,10 +116,26 @@ export default function AdminDashboard() {
   }
 
   const pendingCount = listings.filter(l => l.status === 'pending').length;
+  const contributorsCount = users.filter(u => u.role === 'contributor').length;
 
-  const filteredListings = statusFilter === 'all' 
-    ? listings 
-    : listings.filter(l => l.status === statusFilter);
+  const filteredListings = listings.filter(l => {
+    const matchesStatus = statusFilter === 'all' || l.status === statusFilter;
+    const matchesCity = listingCity === '' || l.city === listingCity;
+    const matchesCategory = listingCategory === '' || l.category === listingCategory;
+    const matchesSearch = listingSearch === '' || 
+      l.title.toLowerCase().includes(listingSearch.toLowerCase()) || 
+      l.authorName.toLowerCase().includes(listingSearch.toLowerCase());
+    return matchesStatus && matchesCity && matchesCategory && matchesSearch;
+  });
+
+  const filteredUsers = users.filter(u => {
+    const matchesSearch = userSearch === '' || 
+      u.name.toLowerCase().includes(userSearch.toLowerCase()) || 
+      u.email.toLowerCase().includes(userSearch.toLowerCase());
+    return matchesSearch;
+  });
+
+  const cityOptions = Object.entries(STATE_CITIES).flatMap(([state, cities]) => cities);
 
   return (
     <motion.div 
@@ -111,7 +152,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -156,6 +197,21 @@ export default function AdminDashboard() {
               <p className="text-3xl font-bold text-white">{users.length}</p>
             </div>
           </motion.div>
+
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="glass-card p-6 rounded-2xl flex items-center gap-4"
+          >
+            <div className="p-4 bg-purple-500/20 text-purple-400 rounded-xl border border-purple-500/30 shadow-inner">
+              <Star className="h-8 w-8" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">Contributors</p>
+              <p className="text-3xl font-bold text-white">{contributorsCount}</p>
+            </div>
+          </motion.div>
         </div>
 
         {/* Tabs */}
@@ -176,31 +232,88 @@ export default function AdminDashboard() {
           </div>
           
           {activeTab === 'listings' && (
-            <div className="flex bg-gray-800/50 rounded-xl p-1 border border-gray-700/50">
-              <button
-                onClick={() => setStatusFilter('all')}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'all' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'}`}
+            <div className="flex items-center gap-4">
+              <Link
+                to="/add-listing"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-colors shadow-lg shadow-blue-500/20"
               >
-                All
-              </button>
-              <button
-                onClick={() => setStatusFilter('pending')}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : 'text-gray-400 hover:text-white'}`}
+                + Create Listing
+              </Link>
+              <div className="flex bg-gray-800/50 rounded-xl p-1 border border-gray-700/50">
+                <button
+                  onClick={() => setStatusFilter('all')}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'all' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'}`}
+                >
+                  All
+                </button>
+                <button
+                  onClick={() => setStatusFilter('pending')}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : 'text-gray-400 hover:text-white'}`}
+                >
+                  Pending
+                </button>
+                <button
+                  onClick={() => setStatusFilter('approved')}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'approved' ? 'bg-green-500/20 text-green-400' : 'text-gray-400 hover:text-white'}`}
+                >
+                  Approved
+                </button>
+                <button
+                  onClick={() => setStatusFilter('rejected')}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'rejected' ? 'bg-red-500/20 text-red-400' : 'text-gray-400 hover:text-white'}`}
+                >
+                  Rejected
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Search and Filters */}
+        <div className="mb-6">
+          {activeTab === 'listings' ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search listings by title or author..."
+                  value={listingSearch}
+                  onChange={(e) => setListingSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                />
+              </div>
+              <select
+                value={listingCategory}
+                onChange={(e) => setListingCategory(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               >
-                Pending
-              </button>
-              <button
-                onClick={() => setStatusFilter('approved')}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'approved' ? 'bg-green-500/20 text-green-400' : 'text-gray-400 hover:text-white'}`}
+                <option value="">All Categories</option>
+                {CATEGORIES.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+              <select
+                value={listingCity}
+                onChange={(e) => setListingCity(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               >
-                Approved
-              </button>
-              <button
-                onClick={() => setStatusFilter('rejected')}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${statusFilter === 'rejected' ? 'bg-red-500/20 text-red-400' : 'text-gray-400 hover:text-white'}`}
-              >
-                Rejected
-              </button>
+                <option value="">All Cities</option>
+                {cityOptions.map(city => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div className="relative max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search users by name or email..."
+                value={userSearch}
+                onChange={(e) => setUserSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              />
             </div>
           )}
         </div>
@@ -270,6 +383,9 @@ export default function AdminDashboard() {
                         <button onClick={() => handleToggleFeatured(listing.id, listing.featured)} className={`${listing.featured ? 'text-blue-400 bg-blue-400/10' : 'text-gray-400 bg-gray-700/50'} hover:text-blue-300 transition-colors p-2 rounded-lg hover:bg-blue-400/20`} title="Toggle Featured">
                           <Star className="h-5 w-5" />
                         </button>
+                        <Link to={`/edit-listing/${listing.id}`} className="text-blue-400 hover:text-blue-300 transition-colors bg-blue-400/10 p-2 rounded-lg hover:bg-blue-400/20" title="Edit">
+                          <Edit className="h-5 w-5" />
+                        </Link>
                         <button onClick={() => handleDeleteListing(listing.id)} className="text-red-400 hover:text-red-300 transition-colors bg-red-400/10 p-2 rounded-lg hover:bg-red-400/20" title="Delete">
                           <Trash2 className="h-5 w-5" />
                         </button>
@@ -291,18 +407,24 @@ export default function AdminDashboard() {
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Name</th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">City</th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Role</th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Joined</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-700/50">
-                  {users.map((user) => (
-                    <tr key={user.uid} className="hover:bg-gray-800/30 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                  {filteredUsers.map((user) => (
+                    <tr key={user.uid} className={`hover:bg-gray-800/30 transition-colors ${user.banned ? 'opacity-50' : ''}`}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white flex items-center gap-2">
                         {user.name}
+                        {user.banned && <span className="bg-red-500/20 text-red-400 text-xs px-2 py-0.5 rounded-full">Banned</span>}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                         {user.email}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                        {user.city || '-'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                         <select
@@ -317,6 +439,24 @@ export default function AdminDashboard() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                         {new Date(user.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex gap-3">
+                          <button 
+                            onClick={() => handleBanUser(user.uid, user.banned || false)} 
+                            className={`${user.banned ? 'text-green-400 hover:text-green-300' : 'text-yellow-400 hover:text-yellow-300'} transition-colors`}
+                            title={user.banned ? "Unban User" : "Ban User"}
+                          >
+                            <Ban className="h-5 w-5" />
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteUser(user.uid)} 
+                            className="text-red-400 hover:text-red-300 transition-colors"
+                            title="Delete User"
+                          >
+                            <Trash2 className="h-5 w-5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

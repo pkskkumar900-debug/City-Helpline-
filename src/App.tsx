@@ -15,6 +15,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import AddListing from './pages/AddListing';
+import EditListing from './pages/EditListing';
 import ListingDetails from './pages/ListingDetails';
 import AdminDashboard from './pages/AdminDashboard';
 import Search from './pages/Search';
@@ -57,6 +58,14 @@ export default function App() {
                 element={
                   <ProtectedRoute>
                     <AddListing />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/edit-listing/:id" 
+                element={
+                  <ProtectedRoute>
+                    <EditListing />
                   </ProtectedRoute>
                 } 
               />

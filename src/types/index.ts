@@ -9,6 +9,12 @@ export interface UserProfile {
   savedListings?: string[];
   photoURL?: string;
   themePreference?: 'light' | 'dark' | 'system';
+  phone?: string;
+  businessName?: string;
+  businessType?: string;
+  city?: string;
+  address?: string;
+  banned?: boolean;
 }
 
 export type ListingStatus = 'pending' | 'approved' | 'rejected';

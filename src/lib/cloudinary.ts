@@ -4,7 +4,7 @@ export async function uploadImageToCloudinary(file: File): Promise<string> {
   formData.append('upload_preset', 'cityhelpline_upload');
 
   try {
-    const response = await fetch('https://api.cloudinary.com/v1_1/djpqwrsl1/image/upload', {
+    const response = await fetch('https://api.cloudinary.com/v1_1/djpqwrs11/image/upload', {
       method: 'POST',
       body: formData,
     });

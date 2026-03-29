@@ -11,6 +11,11 @@ import { Link } from 'react-router-dom';
 export default function AccountSettings() {
   const { currentUser, userProfile, logout } = useAuth();
   const [name, setName] = useState(userProfile?.name || '');
+  const [phone, setPhone] = useState(userProfile?.phone || '');
+  const [businessName, setBusinessName] = useState(userProfile?.businessName || '');
+  const [businessType, setBusinessType] = useState(userProfile?.businessType || '');
+  const [city, setCity] = useState(userProfile?.city || '');
+  const [address, setAddress] = useState(userProfile?.address || '');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'system');
@@ -18,6 +23,11 @@ export default function AccountSettings() {
 
   useEffect(() => {
     setName(userProfile?.name || '');
+    setPhone(userProfile?.phone || '');
+    setBusinessName(userProfile?.businessName || '');
+    setBusinessType(userProfile?.businessType || '');
+    setCity(userProfile?.city || '');
+    setAddress(userProfile?.address || '');
   }, [userProfile]);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
@@ -28,9 +38,16 @@ export default function AccountSettings() {
     setMessage({ type: '', text: '' });
     
     try {
-      await updateDoc(doc(db, 'users', currentUser.uid), {
-        name: name
-      });
+      const updateData: any = { name };
+      if (userProfile?.role === 'contributor') {
+        updateData.phone = phone;
+        updateData.businessName = businessName;
+        updateData.businessType = businessType;
+        updateData.city = city;
+        updateData.address = address;
+      }
+
+      await updateDoc(doc(db, 'users', currentUser.uid), updateData);
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'Failed to update profile' });
@@ -163,9 +180,65 @@ export default function AccountSettings() {
               />
               <p className="text-xs text-gray-500 mt-1">Email cannot be changed.</p>
             </div>
+            
+            {userProfile?.role === 'contributor' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Phone Number</label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Business Name</label>
+                  <input
+                    type="text"
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Business Type</label>
+                  <input
+                    type="text"
+                    value={businessType}
+                    onChange={(e) => setBusinessType(e.target.value)}
+                    className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">City</label>
+                  <input
+                    type="text"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Address</label>
+                  <textarea
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    rows={3}
+                    className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    required
+                  />
+                </div>
+              </>
+            )}
+            
             <button
               type="submit"
-              disabled={loading || name === userProfile?.name}
+              disabled={loading || (name === userProfile?.name && phone === userProfile?.phone && businessName === userProfile?.businessName && businessType === userProfile?.businessType && city === userProfile?.city && address === userProfile?.address)}
               className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors disabled:opacity-50"
             >
               {loading ? 'Saving...' : 'Save Changes'}

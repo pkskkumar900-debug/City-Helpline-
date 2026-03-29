@@ -21,8 +21,26 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate('/');
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      // Fetch user profile to get role
+      const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        if (userData.banned) {
+          await auth.signOut();
+          setError('Your account has been banned. Please contact support.');
+          setLoading(false);
+          return;
+        }
+        if (userData.role === 'contributor') {
+          navigate('/profile');
+        } else {
+          navigate('/');
+        }
+      } else {
+        navigate('/');
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to log in');
     } finally {
@@ -45,11 +63,24 @@ export default function Login() {
           name: user.displayName || 'User',
           email: user.email,
           role: user.email === 'pkskkumar900@gmail.com' ? 'admin' : 'user',
+          banned: false,
           createdAt: serverTimestamp(),
         });
+        navigate('/');
+      } else {
+        const userData = userDoc.data();
+        if (userData.banned) {
+          await auth.signOut();
+          setError('Your account has been banned. Please contact support.');
+          setLoading(false);
+          return;
+        }
+        if (userData.role === 'contributor') {
+          navigate('/profile');
+        } else {
+          navigate('/');
+        }
       }
-      
-      navigate('/');
     } catch (err: any) {
       setError(err.message || 'Failed to log in with Google');
     } finally {

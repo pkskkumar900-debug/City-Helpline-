@@ -87,16 +87,18 @@ export default function Profile() {
             </div>
 
             <div className="space-y-2 border-t border-gray-700 pt-6">
-              <Link to="/add-listing" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-800/50 text-gray-300 hover:text-white transition-colors">
-                <PlusCircle className="h-5 w-5 text-blue-400" />
-                <span className="font-medium">Add New Listing</span>
-              </Link>
+              {userProfile?.role === 'contributor' && (
+                <Link to="/add-listing" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-800/50 text-gray-300 hover:text-white transition-colors">
+                  <PlusCircle className="h-5 w-5 text-blue-400" />
+                  <span className="font-medium">Add New Listing</span>
+                </Link>
+              )}
               <button 
                 onClick={() => setActiveTab(activeTab === 'settings' ? 'listings' : 'settings')}
                 className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors ${activeTab === 'settings' ? 'bg-blue-600/20 text-blue-400' : 'hover:bg-gray-800/50 text-gray-300 hover:text-white'}`}
               >
                 {activeTab === 'settings' ? <ArrowLeft className="h-5 w-5" /> : <Settings className="h-5 w-5" />}
-                <span className="font-medium">{activeTab === 'settings' ? 'Back to Listings' : 'Account Settings'}</span>
+                <span className="font-medium">{activeTab === 'settings' ? (userProfile?.role === 'contributor' ? 'Back to Listings' : 'Back') : 'Account Settings'}</span>
               </button>
               <button 
                 onClick={handleLogout}
@@ -111,7 +113,7 @@ export default function Profile() {
 
         {/* Main Content */}
         <div className="lg:col-span-2">
-          {activeTab === 'settings' ? (
+          {activeTab === 'settings' || userProfile?.role === 'user' ? (
             <AccountSettings />
           ) : (
             <>

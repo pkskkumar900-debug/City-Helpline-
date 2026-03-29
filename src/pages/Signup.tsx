@@ -3,23 +3,43 @@ import { Link, useNavigate } from 'react-router-dom';
 import { auth, googleProvider, db } from '../lib/firebase';
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { UserProfile } from '../types';
+import { UserProfile, Role } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { UserPlus, Eye, EyeOff, Mail, Lock, User, AlertCircle } from 'lucide-react';
+import { UserPlus, Eye, EyeOff, Mail, Lock, User, AlertCircle, Phone, Building2, MapPin, Briefcase } from 'lucide-react';
+import { CATEGORIES, STATE_CITIES } from '../lib/constants';
 
 export default function Signup() {
+  const [role, setRole] = useState<Role>('user');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
+  const [businessName, setBusinessName] = useState('');
+  const [businessType, setBusinessType] = useState('');
+  const [city, setCity] = useState('');
+  const [address, setAddress] = useState('');
+  
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  const cityOptions = Object.entries(STATE_CITIES).flatMap(([state, cities]) => 
+    cities.map(c => ({ value: c, label: c, group: state }))
+  );
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    
+    if (role === 'contributor') {
+      if (!phone || !businessName || !businessType || !city || !address) {
+        setError('Please fill in all business details');
+        return;
+      }
+    }
+    
     setLoading(true);
 
     try {
@@ -27,16 +47,25 @@ export default function Signup() {
       const user = userCredential.user;
 
       // Create user profile in Firestore
-      const userProfile = {
+      const userProfile: any = {
         uid: user.uid,
         name,
         email,
-        role: email === 'pkskkumar900@gmail.com' ? 'admin' : 'user',
+        role: email === 'pkskkumar900@gmail.com' ? 'admin' : role,
+        banned: false,
         createdAt: serverTimestamp(),
       };
 
+      if (role === 'contributor') {
+        userProfile.phone = phone;
+        userProfile.businessName = businessName;
+        userProfile.businessType = businessType;
+        userProfile.city = city;
+        userProfile.address = address;
+      }
+
       await setDoc(doc(db, 'users', user.uid), userProfile);
-      navigate('/');
+      navigate(role === 'contributor' ? '/profile' : '/');
     } catch (err: any) {
       setError(err.message || 'Failed to create an account');
     } finally {
@@ -54,16 +83,27 @@ export default function Signup() {
       // Check if user profile exists, if not create one
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       if (!userDoc.exists()) {
-        await setDoc(doc(db, 'users', user.uid), {
+        const userProfile: any = {
           uid: user.uid,
           name: user.displayName || 'User',
           email: user.email,
-          role: user.email === 'pkskkumar900@gmail.com' ? 'admin' : 'user',
+          role: user.email === 'pkskkumar900@gmail.com' ? 'admin' : role,
+          banned: false,
           createdAt: serverTimestamp(),
-        });
+        };
+
+        if (role === 'contributor') {
+          userProfile.phone = phone;
+          userProfile.businessName = businessName;
+          userProfile.businessType = businessType;
+          userProfile.city = city;
+          userProfile.address = address;
+        }
+
+        await setDoc(doc(db, 'users', user.uid), userProfile);
       }
       
-      navigate('/');
+      navigate(role === 'contributor' ? '/profile' : '/');
     } catch (err: any) {
       setError(err.message || 'Failed to sign up with Google');
     } finally {
@@ -144,6 +184,33 @@ export default function Signup() {
             )}
           </AnimatePresence>
 
+          <div className="flex p-1 bg-gray-900/60 rounded-xl border border-gray-700/50 mb-6">
+            <button
+              type="button"
+              onClick={() => setRole('user')}
+              className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all ${
+                role === 'user' 
+                  ? 'bg-purple-600 text-white shadow-md' 
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
+              }`}
+            >
+              User
+              <span className="block text-[10px] opacity-70 mt-0.5">Explore services</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole('contributor')}
+              className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all ${
+                role === 'contributor' 
+                  ? 'bg-purple-600 text-white shadow-md' 
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
+              }`}
+            >
+              Contributor
+              <span className="block text-[10px] opacity-70 mt-0.5">Add your business</span>
+            </button>
+          </div>
+
           <div className="space-y-5">
             <div className="relative group">
               <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-purple-400">Full Name</label>
@@ -208,6 +275,118 @@ export default function Signup() {
                 </button>
               </div>
             </div>
+
+            <AnimatePresence>
+              {role === 'contributor' && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="space-y-5 overflow-hidden"
+                >
+                  <div className="relative group">
+                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-purple-400">Phone Number</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Phone className={`h-5 w-5 transition-colors ${focusedInput === 'phone' ? 'text-purple-400' : 'text-gray-500'}`} />
+                      </div>
+                      <input
+                        type="tel"
+                        required={role === 'contributor'}
+                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 outline-none transition-all placeholder-gray-500 shadow-inner"
+                        placeholder="+91 98765 43210"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        onFocus={() => setFocusedInput('phone')}
+                        onBlur={() => setFocusedInput(null)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="relative group">
+                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-purple-400">Business Name</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Building2 className={`h-5 w-5 transition-colors ${focusedInput === 'businessName' ? 'text-purple-400' : 'text-gray-500'}`} />
+                      </div>
+                      <input
+                        type="text"
+                        required={role === 'contributor'}
+                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 outline-none transition-all placeholder-gray-500 shadow-inner"
+                        placeholder="My Awesome PG"
+                        value={businessName}
+                        onChange={(e) => setBusinessName(e.target.value)}
+                        onFocus={() => setFocusedInput('businessName')}
+                        onBlur={() => setFocusedInput(null)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="relative group">
+                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-purple-400">Business Type</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Briefcase className={`h-5 w-5 transition-colors ${focusedInput === 'businessType' ? 'text-purple-400' : 'text-gray-500'}`} />
+                      </div>
+                      <select
+                        required={role === 'contributor'}
+                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 outline-none transition-all shadow-inner"
+                        value={businessType}
+                        onChange={(e) => setBusinessType(e.target.value)}
+                        onFocus={() => setFocusedInput('businessType')}
+                        onBlur={() => setFocusedInput(null)}
+                      >
+                        <option value="" disabled>Select Business Type</option>
+                        {CATEGORIES.map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="relative group">
+                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-purple-400">City</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <MapPin className={`h-5 w-5 transition-colors ${focusedInput === 'city' ? 'text-purple-400' : 'text-gray-500'}`} />
+                      </div>
+                      <select
+                        required={role === 'contributor'}
+                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 outline-none transition-all shadow-inner"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        onFocus={() => setFocusedInput('city')}
+                        onBlur={() => setFocusedInput(null)}
+                      >
+                        <option value="" disabled>Select City</option>
+                        {cityOptions.map(opt => (
+                          <option key={opt.value} value={opt.value}>{opt.label} ({opt.group})</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="relative group">
+                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-purple-400">Full Address</label>
+                    <div className="relative">
+                      <div className="absolute top-3.5 left-0 pl-4 flex items-start pointer-events-none">
+                        <MapPin className={`h-5 w-5 transition-colors ${focusedInput === 'address' ? 'text-purple-400' : 'text-gray-500'}`} />
+                      </div>
+                      <textarea
+                        required={role === 'contributor'}
+                        rows={3}
+                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 outline-none transition-all placeholder-gray-500 shadow-inner resize-none"
+                        placeholder="123 Main St, Near Landmark"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        onFocus={() => setFocusedInput('address')}
+                        onBlur={() => setFocusedInput(null)}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <div>

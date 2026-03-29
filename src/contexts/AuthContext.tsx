@@ -27,7 +27,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const docRef = doc(db, 'users', user.uid);
         unsubscribeProfile = onSnapshot(docRef, (docSnap) => {
           if (docSnap.exists()) {
-            setUserProfile(docSnap.data() as UserProfile);
+            const data = docSnap.data() as UserProfile;
+            if (data.banned) {
+              signOut(auth);
+              setUserProfile(null);
+              setCurrentUser(null);
+            } else {
+              setUserProfile(data);
+            }
           } else {
             setUserProfile(null);
           }

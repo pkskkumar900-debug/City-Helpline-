@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../lib/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { uploadImageToCloudinary } from '../lib/cloudinary';
 import { Listing } from '../types';
 import { UploadCloud, X, ArrowLeft, Tag, MapPin } from 'lucide-react';
@@ -10,10 +10,12 @@ import { motion } from 'motion/react';
 import { CATEGORIES, STATE_CITIES } from '../lib/constants';
 import { SearchableSelect } from '../components/ui/SearchableSelect';
 
-export default function AddListing() {
+export default function EditListing() {
+  const { id } = useParams<{ id: string }>();
   const { currentUser, userProfile } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [error, setError] = useState('');
   
   const [title, setTitle] = useState('');
@@ -23,14 +25,9 @@ export default function AddListing() {
   const [address, setAddress] = useState('');
   const [price, setPrice] = useState('');
   const [contact, setContact] = useState('');
-  const [images, setImages] = useState<File[]>([]);
-  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (userProfile && userProfile.role !== 'contributor' && userProfile.role !== 'admin' && currentUser?.email !== 'pkskkumar900@gmail.com') {
-      navigate('/');
-    }
-  }, [userProfile, currentUser, navigate]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [newImages, setNewImages] = useState<File[]>([]);
+  const [newImagePreviewUrls, setNewImagePreviewUrls] = useState<string[]>([]);
 
   const categoryOptions = CATEGORIES.map(cat => ({ value: cat, label: cat }));
   
@@ -38,24 +35,62 @@ export default function AddListing() {
     cities.map(c => ({ value: c, label: c, group: state }))
   );
 
+  useEffect(() => {
+    const fetchListing = async () => {
+      if (!id) return;
+      try {
+        const docRef = doc(db, 'listings', id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data() as Listing;
+          const isDefaultAdmin = currentUser?.email === 'pkskkumar900@gmail.com';
+          if (currentUser?.uid !== data.authorId && userProfile?.role !== 'admin' && !isDefaultAdmin) {
+            navigate('/');
+            return;
+          }
+          setTitle(data.title);
+          setDescription(data.description);
+          setCategory(data.category);
+          setCity(data.city);
+          setAddress(data.address);
+          setPrice(data.price.toString());
+          setContact(data.contact);
+          setExistingImages(data.images || []);
+        } else {
+          setError('Listing not found');
+        }
+      } catch (err) {
+        console.error("Error fetching listing:", err);
+        setError('Failed to load listing');
+      } finally {
+        setFetching(false);
+      }
+    };
+    fetchListing();
+  }, [id, currentUser, userProfile, navigate]);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files) as File[];
-      setImages(prev => [...prev, ...filesArray]);
+      setNewImages(prev => [...prev, ...filesArray]);
       
       const newPreviewUrls = filesArray.map(file => URL.createObjectURL(file));
-      setImagePreviewUrls(prev => [...prev, ...newPreviewUrls]);
+      setNewImagePreviewUrls(prev => [...prev, ...newPreviewUrls]);
     }
   };
 
-  const removeImage = (index: number) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
-    setImagePreviewUrls(prev => prev.filter((_, i) => i !== index));
+  const removeNewImage = (index: number) => {
+    setNewImages(prev => prev.filter((_, i) => i !== index));
+    setNewImagePreviewUrls(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExistingImage = (index: number) => {
+    setExistingImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!currentUser || !userProfile) return;
+    if (!currentUser || !userProfile || !id) return;
     
     if (!category) {
       setError('Please select a category');
@@ -71,15 +106,17 @@ export default function AddListing() {
     setError('');
 
     try {
-      // 1. Upload images to Cloudinary
+      // 1. Upload new images to Cloudinary
       const uploadedImageUrls: string[] = [];
-      for (const image of images) {
+      for (const image of newImages) {
         const downloadUrl = await uploadImageToCloudinary(image);
         uploadedImageUrls.push(downloadUrl);
       }
 
-      // 2. Save listing to Firestore
-      const newListing: Omit<Listing, 'id'> = {
+      const finalImages = [...existingImages, ...uploadedImageUrls];
+
+      // 2. Update listing in Firestore
+      const updatedListing = {
         title,
         description,
         category,
@@ -87,25 +124,23 @@ export default function AddListing() {
         address,
         price: Number(price),
         contact,
-        images: uploadedImageUrls,
-        status: 'pending', // Default status
-        featured: false,
-        authorId: currentUser.uid,
-        authorName: userProfile.name,
-        createdAt: Date.now(),
+        images: finalImages,
       };
 
-      await addDoc(collection(db, 'listings'), newListing);
+      await updateDoc(doc(db, 'listings', id), updatedListing);
       
-      // Redirect to profile page
-      navigate('/profile');
+      navigate(-1);
     } catch (err: any) {
-      console.error("Error adding listing:", err);
-      setError(err.message || 'Failed to add listing');
+      console.error("Error updating listing:", err);
+      setError(err.message || 'Failed to update listing');
     } finally {
       setLoading(false);
     }
   };
+
+  if (fetching) {
+    return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>;
+  }
 
   return (
     <motion.div 
@@ -128,7 +163,7 @@ export default function AddListing() {
           transition={{ delay: 0.1 }}
           className="glass-card rounded-2xl p-8 lg:p-10"
         >
-          <h1 className="text-3xl font-extrabold text-white mb-8 drop-shadow-sm">Add New Listing</h1>
+          <h1 className="text-3xl font-extrabold text-white mb-8 drop-shadow-sm">Edit Listing</h1>
           
           {error && (
             <div className="mb-8 bg-red-900/30 border border-red-800/50 text-red-200 px-4 py-3 rounded-xl text-sm backdrop-blur-sm">
@@ -231,7 +266,7 @@ export default function AddListing() {
                         htmlFor="file-upload"
                         className="relative cursor-pointer rounded-md font-medium text-blue-400 hover:text-blue-300 focus-within:outline-none"
                       >
-                        <span>Upload files</span>
+                        <span>Upload new files</span>
                         <input
                           id="file-upload"
                           name="file-upload"
@@ -248,28 +283,49 @@ export default function AddListing() {
                   </div>
                 </div>
 
-                {/* Image Previews */}
-                {imagePreviewUrls.length > 0 && (
-                  <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    {imagePreviewUrls.map((url, index) => (
-                      <motion.div 
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        key={index} 
-                        className="relative group rounded-xl overflow-hidden border border-gray-700/50 aspect-square"
-                      >
-                        <img src={url} alt={`Preview ${index}`} className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index)}
-                            className="bg-red-500 text-white rounded-full p-2 transform hover:scale-110 transition-transform shadow-lg"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
+                {/* Existing Images */}
+                {existingImages.length > 0 && (
+                  <div className="mt-6">
+                    <p className="text-sm font-medium text-gray-300 mb-2">Existing Images</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                      {existingImages.map((url, index) => (
+                        <div key={index} className="relative group rounded-xl overflow-hidden border border-gray-700/50 aspect-square">
+                          <img src={url} alt={`Existing ${index}`} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button
+                              type="button"
+                              onClick={() => removeExistingImage(index)}
+                              className="bg-red-500 text-white rounded-full p-2 transform hover:scale-110 transition-transform shadow-lg"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
                         </div>
-                      </motion.div>
-                    ))}
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* New Image Previews */}
+                {newImagePreviewUrls.length > 0 && (
+                  <div className="mt-6">
+                    <p className="text-sm font-medium text-gray-300 mb-2">New Images</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                      {newImagePreviewUrls.map((url, index) => (
+                        <div key={index} className="relative group rounded-xl overflow-hidden border border-gray-700/50 aspect-square">
+                          <img src={url} alt={`New Preview ${index}`} className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button
+                              type="button"
+                              onClick={() => removeNewImage(index)}
+                              className="bg-red-500 text-white rounded-full p-2 transform hover:scale-110 transition-transform shadow-lg"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -278,7 +334,7 @@ export default function AddListing() {
             <div className="pt-8 border-t border-gray-700/50 flex justify-end gap-4">
               <button
                 type="button"
-                onClick={() => navigate('/')}
+                onClick={() => navigate(-1)}
                 className="px-6 py-3 rounded-xl text-sm font-medium text-gray-300 hover:bg-gray-800/50 hover:text-white transition-colors border border-transparent hover:border-gray-700/50"
               >
                 Cancel
@@ -288,7 +344,7 @@ export default function AddListing() {
                 disabled={loading}
                 className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-medium py-3 px-8 rounded-xl transition-all shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Submitting...' : 'Submit Listing'}
+                {loading ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </form>
