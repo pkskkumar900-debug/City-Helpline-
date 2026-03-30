@@ -82,15 +82,12 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-white mb-0 leading-tight">
               Find Your Perfect <br className="hidden md:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500">
                 Student Setup
               </span>
             </h1>
-            <p className="mt-6 text-xl md:text-2xl max-w-3xl mx-auto text-gray-400 mb-12 font-light leading-relaxed">
-              PGs, Hostels, Messes, Libraries, and Coaching centers in your city. All in one place, curated for you.
-            </p>
           </motion.div>
           
           {/* Search Bar */}
@@ -99,33 +96,36 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="max-w-3xl mx-auto relative group"
+            className="w-full max-w-[700px] mx-auto px-4 sm:px-0 mt-4 sm:mt-5 sticky top-20 z-40"
           >
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-            <div className="relative glass-card rounded-full p-2 flex items-center bg-[#151A23]/80 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
-              <div className="flex-grow flex items-center pl-6">
-                <Search className="h-6 w-6 text-gray-400 group-focus-within:text-blue-400 transition-colors" />
-                <input
-                  type="text"
-                  placeholder="Search for PGs, libraries, cities..."
-                  className="w-full bg-transparent border-none focus:ring-0 text-white placeholder-gray-500 text-lg py-4 outline-none px-4 font-medium"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+            <div className="relative flex items-center w-full h-[50px] sm:h-[56px] bg-white/5 backdrop-blur-[10px] border border-white/10 rounded-[14px] sm:rounded-[18px] shadow-[0_8px_32px_rgba(0,0,0,0.2)] focus-within:shadow-[0_0_20px_rgba(255,255,255,0.1)] focus-within:border-white/20 transition-all duration-300 overflow-hidden">
+              <div className="pl-4 sm:pl-5 flex items-center justify-center">
+                <Search className="h-5 w-5 text-gray-400 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
               </div>
-              <button 
-                type="submit"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-10 py-4 rounded-full font-bold text-lg transition-all shadow-lg shadow-blue-500/25 hover:scale-105 flex items-center gap-2"
-              >
-                Search
-                <ArrowRight className="h-5 w-5" />
-              </button>
+              <input
+                type="text"
+                placeholder="Search PGs, libraries, coaching..."
+                className="flex-grow bg-transparent border-none focus:ring-0 text-white placeholder-gray-400 text-base sm:text-lg py-2 px-3 sm:px-4 outline-none font-medium w-full"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <div className="pr-1.5 sm:pr-2 flex items-center h-full py-1.5 sm:py-2">
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.97 }}
+                  type="submit"
+                  className="h-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-4 sm:px-6 rounded-[10px] sm:rounded-[14px] font-bold text-sm sm:text-base transition-all shadow-[0_0_15px_rgba(59,130,246,0.4)] flex items-center gap-2"
+                >
+                  Search
+                  <ArrowRight className="h-4 w-4" />
+                </motion.button>
+              </div>
             </div>
           </motion.form>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 sm:-mt-20 relative z-20">
         
         {/* Categories */}
         <motion.div 

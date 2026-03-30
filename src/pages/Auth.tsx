@@ -208,16 +208,35 @@ export default function Auth() {
         if (email && pendingCredential) {
           try {
             const methods = await fetchSignInMethodsForEmail(auth, email);
-            if (methods.length > 0) {
+            
+            let primaryProvider = '';
+            if (methods.includes('google.com')) {
+              primaryProvider = 'google.com';
+              toast.info("This email already exists. Continue with Google");
+            } else if (methods.includes('github.com')) {
+              primaryProvider = 'github.com';
+              toast.info("This email already exists. Continue with GitHub");
+            } else if (methods.includes('password')) {
+              primaryProvider = 'password';
+              toast.info("Login with email/password first");
+            }
+
+            if (primaryProvider) {
               setLinkEmail(email);
-              setLinkProvider(methods[0]);
+              setLinkProvider(primaryProvider);
               setPendingCred(pendingCredential);
               setShowLinkModal(true);
+              setLoading(false);
+              return;
+            } else {
+              toast.error("Try another login method");
               setLoading(false);
               return;
             }
           } catch (fetchErr) {
             console.error('Error fetching sign-in methods:', fetchErr);
+            setLoading(false);
+            return;
           }
         }
       }
@@ -835,8 +854,7 @@ export default function Auth() {
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-3">Account Exists</h3>
                 <p className="text-gray-400 text-sm">
-                  An account already exists with <span className="text-white font-medium">{linkEmail}</span>.
-                  Please sign in with your existing method to link your accounts.
+                  Account already exists with another login method. Continue to link accounts.
                 </p>
               </div>
 
