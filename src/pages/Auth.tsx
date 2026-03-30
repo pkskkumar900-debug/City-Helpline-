@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { auth, googleProvider, githubProvider, db } from '../lib/firebase';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, fetchSignInMethodsForEmail, linkWithCredential, GithubAuthProvider, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, fetchSignInMethodsForEmail, linkWithPopup, GithubAuthProvider, GoogleAuthProvider } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { Role } from '../types';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'motion/react';
@@ -212,13 +212,10 @@ export default function Auth() {
             let primaryProvider = '';
             if (methods.includes('google.com')) {
               primaryProvider = 'google.com';
-              toast.info("This email already exists. Continue with Google");
             } else if (methods.includes('github.com')) {
               primaryProvider = 'github.com';
-              toast.info("This email already exists. Continue with GitHub");
             } else if (methods.includes('password')) {
               primaryProvider = 'password';
-              toast.info("Login with email/password first");
             }
 
             if (primaryProvider) {
@@ -229,7 +226,6 @@ export default function Auth() {
               setLoading(false);
               return;
             } else {
-              toast.error("Try another login method");
               setLoading(false);
               return;
             }
@@ -262,7 +258,8 @@ export default function Auth() {
       }
 
       if (userCredential && pendingCred) {
-        await linkWithCredential(userCredential.user, pendingCred);
+        const providerToLink = pendingCred.providerId === 'github.com' ? githubProvider : googleProvider;
+        await linkWithPopup(userCredential.user, providerToLink);
         toast.success('Accounts linked successfully!');
         
         const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
