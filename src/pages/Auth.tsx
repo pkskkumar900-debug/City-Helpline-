@@ -164,6 +164,18 @@ export default function Auth() {
     }
   };
 
+  const githubLogin = async () => {
+    try {
+      const provider = new GithubAuthProvider();
+      const user = await handleSocialAuth(provider);
+      if (user) {
+        console.log("GitHub login success:", user);
+      }
+    } catch (error) {
+      console.error("GitHub login error:", error);
+    }
+  };
+
   const handleSocialAuth = async (provider: any) => {
     setLoading(true);
     try {
@@ -182,7 +194,7 @@ export default function Auth() {
           await auth.signOut();
           toast.error('Your account has been banned. Please contact support.');
           setLoading(false);
-          return;
+          return null;
         }
         
         // Update lastLogin
@@ -195,7 +207,13 @@ export default function Auth() {
           navigate('/');
         }
       }
+      return user;
     } catch (err: any) {
+      if (err.code === 'auth/popup-blocked') {
+        alert('Popup blocked by browser. Please allow popups for this site.');
+        setLoading(false);
+        return;
+      }
       if (err.code === 'auth/account-exists-with-different-credential') {
         const email = err.customData?.email;
         let pendingCredential;
@@ -703,7 +721,7 @@ export default function Auth() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.97 }}
                 type="button"
-                onClick={() => handleSocialAuth(githubProvider)}
+                onClick={githubLogin}
                 disabled={loading}
                 className="relative w-full h-[54px] flex justify-center items-center gap-3 rounded-2xl text-white font-semibold overflow-hidden group transition-all duration-300 shadow-[0_0_20px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]"
               >
