@@ -15,7 +15,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(() => {
+    const cachedProfile = localStorage.getItem('userProfile');
+    return cachedProfile ? JSON.parse(cachedProfile) : null;
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,20 +35,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               signOut(auth);
               setUserProfile(null);
               setCurrentUser(null);
+              localStorage.removeItem('userProfile');
             } else {
               setUserProfile(data);
+              localStorage.setItem('userProfile', JSON.stringify(data));
             }
           } else {
             setUserProfile(null);
+            localStorage.removeItem('userProfile');
           }
           setLoading(false);
         }, (error) => {
           console.error("Error fetching user profile:", error);
           setUserProfile(null);
+          localStorage.removeItem('userProfile');
           setLoading(false);
         });
       } else {
         setUserProfile(null);
+        localStorage.removeItem('userProfile');
         setLoading(false);
         if (unsubscribeProfile) {
           unsubscribeProfile();

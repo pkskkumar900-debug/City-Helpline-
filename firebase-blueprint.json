@@ -9,7 +9,16 @@
         "name": { "type": "string" },
         "email": { "type": "string" },
         "role": { "type": "string", "enum": ["user", "contributor", "admin"] },
-        "createdAt": { "type": "number" }
+        "createdAt": { "type": "number" },
+        "lastLogin": { "type": "number" },
+        "banned": { "type": "boolean" },
+        "phone": { "type": "string" },
+        "businessName": { "type": "string" },
+        "businessType": { "type": "string" },
+        "city": { "type": "string" },
+        "address": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "themePreference": { "type": "string", "enum": ["light", "dark", "system"] }
       },
       "required": ["uid", "name", "email", "role", "createdAt"]
     },

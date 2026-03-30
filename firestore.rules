@@ -34,13 +34,20 @@ service cloud.firestore {
     // ===============================================================
     
     function isValidUser(data) {
-      return hasOnlyAllowedFields(['uid', 'name', 'email', 'role', 'createdAt', 'photoURL', 'themePreference']) &&
+      return hasOnlyAllowedFields(['uid', 'name', 'email', 'role', 'createdAt', 'photoURL', 'themePreference', 'lastLogin', 'banned', 'phone', 'businessName', 'businessType', 'city', 'address']) &&
              data.uid is string && data.uid.size() > 0 && data.uid.size() < 100 &&
              data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
              data.email is string && isValidEmail(data.email) &&
              data.role in ['user', 'contributor', 'admin'] &&
              (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() < 1000)) &&
              (!('themePreference' in data) || (data.themePreference in ['light', 'dark', 'system'])) &&
+             (!('banned' in data) || data.banned is bool) &&
+             (!('phone' in data) || (data.phone is string && data.phone.size() < 20)) &&
+             (!('businessName' in data) || (data.businessName is string && data.businessName.size() < 100)) &&
+             (!('businessType' in data) || (data.businessType is string && data.businessType.size() < 100)) &&
+             (!('city' in data) || (data.city is string && data.city.size() < 100)) &&
+             (!('address' in data) || (data.address is string && data.address.size() < 500)) &&
+             (!('lastLogin' in data) || data.lastLogin is number || data.lastLogin is timestamp) &&
              (data.createdAt is number || data.createdAt is timestamp);
     }
 

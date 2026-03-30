@@ -13,8 +13,7 @@ import { Toaster } from 'sonner';
 
 // Pages
 import Home from './pages/Home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+import Auth from './pages/Auth';
 import AddListing from './pages/AddListing';
 import EditListing from './pages/EditListing';
 import ListingDetails from './pages/ListingDetails';
@@ -42,8 +41,8 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/search" element={<Search />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Auth />} />
+              <Route path="/signup" element={<Auth />} />
               <Route path="/listing/:id" element={<ListingDetails />} />
               
               {/* Protected Routes */}
