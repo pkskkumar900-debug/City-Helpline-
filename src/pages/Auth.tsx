@@ -164,15 +164,50 @@ export default function Auth() {
     }
   };
 
-  const githubLogin = async () => {
+  const handleGithubLogin = async () => {
+    console.log("GitHub button clicked");
     try {
       const provider = new GithubAuthProvider();
-      const user = await handleSocialAuth(provider);
-      if (user) {
-        console.log("GitHub login success:", user);
+      provider.addScope("read:user");
+      provider.addScope("user:email");
+
+      const result = await signInWithPopup(auth, provider);
+
+      console.log("GitHub login success:", result.user);
+      alert("Login successful");
+      
+      // Continue with app logic so user actually logs in
+      const user = result.user;
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (!userDoc.exists()) {
+        setPendingUser(user);
+        setShowRoleModal(true);
+      } else {
+        const userData = userDoc.data();
+        if (userData.banned) {
+          await auth.signOut();
+          toast.error('Your account has been banned. Please contact support.');
+          return;
+        }
+        await setDoc(doc(db, 'users', user.uid), { lastLogin: serverTimestamp() }, { merge: true });
+        toast.success('Logged in successfully');
+        if (userData.role === 'contributor') {
+          navigate('/profile');
+        } else {
+          navigate('/');
+        }
       }
-    } catch (error) {
+
+    } catch (error: any) {
       console.error("GitHub login error:", error);
+
+      if (error.code === "auth/popup-blocked") {
+        alert("Popup blocked. Please allow popups.");
+      }
+
+      if (error.code === "auth/account-exists-with-different-credential") {
+        alert("Account exists with different login method. Try Google login.");
+      }
     }
   };
 
@@ -445,16 +480,16 @@ export default function Auth() {
         </div>
 
         <AnimatePresence mode="wait">
-          <motion.form 
+          <motion.div 
             key={isLogin ? 'login-form' : 'signup-form'}
             initial={{ opacity: 0, x: isLogin ? -20 : 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: isLogin ? 20 : -20 }}
             transition={{ duration: 0.3 }}
             className="mt-10 space-y-6" 
-            onSubmit={isLogin ? handleLoginSubmit : handleSignupSubmit}
           >
-            {!isLogin && (
+            <form onSubmit={isLogin ? handleLoginSubmit : handleSignupSubmit} className="space-y-6">
+              {!isLogin && (
               <div className="flex p-1 bg-gray-900/60 rounded-xl border border-gray-700/50 mb-6">
                 <button
                   type="button"
@@ -704,6 +739,7 @@ export default function Auth() {
                 </span>
               </motion.button>
             </div>
+            </form>
             
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
@@ -721,8 +757,7 @@ export default function Auth() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.97 }}
                 type="button"
-                onClick={githubLogin}
-                disabled={loading}
+                onClick={handleGithubLogin}
                 className="relative w-full h-[54px] flex justify-center items-center gap-3 rounded-2xl text-white font-semibold overflow-hidden group transition-all duration-300 shadow-[0_0_20px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]"
               >
                 {/* Animated Gradient Background */}
@@ -776,7 +811,7 @@ export default function Auth() {
                 </div>
               </motion.button>
             </div>
-          </motion.form>
+          </motion.div>
         </AnimatePresence>
       </motion.div>
 
