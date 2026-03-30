@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { auth, googleProvider, githubProvider, db } from '../lib/firebase';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, fetchSignInMethodsForEmail, linkWithCredential, GithubAuthProvider, GoogleAuthProvider } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { Role } from '../types';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'motion/react';
@@ -62,6 +62,13 @@ export default function Auth() {
   // First Time User State
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [pendingUser, setPendingUser] = useState<any>(null);
+
+  // Account Linking State
+  const [showLinkModal, setShowLinkModal] = useState(false);
+  const [linkEmail, setLinkEmail] = useState('');
+  const [linkProvider, setLinkProvider] = useState('');
+  const [pendingCred, setPendingCred] = useState<any>(null);
+  const [linkPassword, setLinkPassword] = useState('');
 
   // Signup Specific State
   const [role, setRole] = useState<Role>('user');
@@ -189,7 +196,82 @@ export default function Auth() {
         }
       }
     } catch (err: any) {
+      if (err.code === 'auth/account-exists-with-different-credential') {
+        const email = err.customData?.email;
+        let pendingCredential;
+        if (provider.providerId === 'github.com') {
+          pendingCredential = GithubAuthProvider.credentialFromError(err);
+        } else if (provider.providerId === 'google.com') {
+          pendingCredential = GoogleAuthProvider.credentialFromError(err);
+        }
+
+        if (email && pendingCredential) {
+          try {
+            const methods = await fetchSignInMethodsForEmail(auth, email);
+            if (methods.length > 0) {
+              setLinkEmail(email);
+              setLinkProvider(methods[0]);
+              setPendingCred(pendingCredential);
+              setShowLinkModal(true);
+              setLoading(false);
+              return;
+            }
+          } catch (fetchErr) {
+            console.error('Error fetching sign-in methods:', fetchErr);
+          }
+        }
+      }
       toast.error(err.message || 'Login failed, try again');
+    } finally {
+      if (!showLinkModal) {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleLinkAccount = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setLoading(true);
+    try {
+      let userCredential;
+      if (linkProvider === 'google.com') {
+        userCredential = await signInWithPopup(auth, googleProvider);
+      } else if (linkProvider === 'github.com') {
+        userCredential = await signInWithPopup(auth, githubProvider);
+      } else if (linkProvider === 'password') {
+        userCredential = await signInWithEmailAndPassword(auth, linkEmail, linkPassword);
+      }
+
+      if (userCredential && pendingCred) {
+        await linkWithCredential(userCredential.user, pendingCred);
+        toast.success('Accounts linked successfully!');
+        
+        const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          if (userData.banned) {
+            await auth.signOut();
+            toast.error('Your account has been banned.');
+            setLoading(false);
+            setShowLinkModal(false);
+            return;
+          }
+          await setDoc(doc(db, 'users', userCredential.user.uid), { lastLogin: serverTimestamp() }, { merge: true });
+          
+          if (userData.role === 'contributor') {
+            navigate('/profile');
+          } else {
+            navigate('/');
+          }
+        } else {
+          // If the linked account was somehow incomplete, show role modal
+          setPendingUser(userCredential.user);
+          setShowRoleModal(true);
+        }
+        setShowLinkModal(false);
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to link accounts');
     } finally {
       setLoading(false);
     }
@@ -607,23 +689,23 @@ export default function Auth() {
                 type="button"
                 onClick={() => handleSocialAuth(githubProvider)}
                 disabled={loading}
-                className="relative w-full h-[54px] flex justify-center items-center gap-3 rounded-2xl text-white font-semibold overflow-hidden group transition-all duration-300 shadow-[0_0_20px_rgba(108,99,255,0.3)] hover:shadow-[0_0_30px_rgba(108,99,255,0.6)]"
+                className="relative w-full h-[54px] flex justify-center items-center gap-3 rounded-2xl text-white font-semibold overflow-hidden group transition-all duration-300 shadow-[0_0_20px_rgba(0,0,0,0.5)] hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]"
               >
                 {/* Animated Gradient Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#6C63FF] to-[#00D4FF] opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-black opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
                 
                 {/* Glass Overlay */}
                 <div className="absolute inset-0 backdrop-blur-md bg-white/5" />
                 
                 {/* Shimmer Effect */}
                 <motion.div 
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12"
                   initial={{ x: '-150%' }}
                   whileHover={{ x: '150%' }}
                   transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
                 />
                 
-                <Github className="w-5 h-5 relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]" />
+                <Github className="w-5 h-5 relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
                 <span className="relative z-10 tracking-wide text-[15px]">Continue with GitHub</span>
               </motion.button>
 
@@ -633,27 +715,29 @@ export default function Auth() {
                 type="button"
                 onClick={() => handleSocialAuth(googleProvider)}
                 disabled={loading}
-                className="relative w-full h-[54px] p-[1px] rounded-2xl overflow-hidden group transition-all duration-300"
+                className="relative w-full h-[54px] p-[1px] rounded-2xl overflow-hidden group transition-all duration-300 shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.5)]"
               >
                 {/* Animated Gradient Border Background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/40 via-purple-500/40 to-pink-500/40 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-r from-red-400/60 via-red-500/60 to-orange-500/60 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
                 
                 {/* Inner Button Content */}
-                <div className="relative w-full h-full flex justify-center items-center gap-3 rounded-[15px] bg-[#0f172a] backdrop-blur-xl group-hover:bg-[#0f172a]/80 transition-colors duration-300">
+                <div className="relative w-full h-full flex justify-center items-center gap-3 rounded-[15px] bg-red-600 backdrop-blur-xl group-hover:bg-red-500 transition-colors duration-300">
                   {/* Shimmer */}
                   <motion.div 
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12"
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
                     initial={{ x: '-150%' }}
                     whileHover={{ x: '150%' }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
                   />
                   {/* Icon & Text */}
-                  <svg className="w-5 h-5 relative z-10" viewBox="0 0 24 24">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                  </svg>
+                  <div className="w-7 h-7 bg-white rounded-full flex items-center justify-center relative z-10 shadow-sm">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                    </svg>
+                  </div>
                   <span className="relative z-10 text-white font-semibold tracking-wide text-[15px]">Continue with Google</span>
                 </div>
               </motion.button>
@@ -721,6 +805,106 @@ export default function Auth() {
                   </div>
                 </motion.button>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Account Linking Modal */}
+      <AnimatePresence>
+        {showLinkModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", bounce: 0.4 }}
+              className="relative w-full max-w-md bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+              
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-6">
+                  <AlertCircle className="w-8 h-8 text-blue-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">Account Exists</h3>
+                <p className="text-gray-400 text-sm">
+                  An account already exists with <span className="text-white font-medium">{linkEmail}</span>.
+                  Please sign in with your existing method to link your accounts.
+                </p>
+              </div>
+
+              {linkProvider === 'password' ? (
+                <form onSubmit={handleLinkAccount} className="space-y-4">
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-gray-500" />
+                    </div>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={linkPassword}
+                      onChange={(e) => setLinkPassword(e.target.value)}
+                      className="block w-full pl-11 pr-10 py-3.5 border border-gray-700/50 rounded-xl bg-gray-900/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all sm:text-sm"
+                      placeholder="Enter your password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-white transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-3.5 px-4 rounded-xl text-white font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-70 transition-all"
+                  >
+                    {loading ? 'Linking...' : 'Sign In & Link'}
+                  </motion.button>
+                </form>
+              ) : (
+                <div className="space-y-4">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleLinkAccount()}
+                    disabled={loading}
+                    className="w-full py-3.5 px-4 rounded-xl text-white font-bold bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-all flex items-center justify-center gap-3"
+                  >
+                    {linkProvider === 'google.com' ? (
+                      <svg className="w-5 h-5" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                      </svg>
+                    ) : (
+                      <Github className="w-5 h-5" />
+                    )}
+                    {loading ? 'Linking...' : `Continue with ${linkProvider === 'google.com' ? 'Google' : 'GitHub'}`}
+                  </motion.button>
+                </div>
+              )}
+              
+              <button
+                onClick={() => {
+                  setShowLinkModal(false);
+                  setPendingCred(null);
+                }}
+                className="mt-6 w-full text-sm text-gray-400 hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
             </motion.div>
           </div>
         )}
