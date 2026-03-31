@@ -8,11 +8,20 @@ import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from
 import { LogIn, UserPlus, Eye, EyeOff, Mail, Lock, User, AlertCircle, Phone, Building2, MapPin, Briefcase, Github, ChevronRight } from 'lucide-react';
 import { CATEGORIES, STATE_CITIES } from '../lib/constants';
 import { toast } from 'sonner';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Auth() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { currentUser, loading: authLoading } = useAuth();
   const [isLogin, setIsLogin] = useState(location.pathname === '/login');
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!authLoading && currentUser) {
+      navigate('/');
+    }
+  }, [currentUser, authLoading, navigate]);
 
   // Update state if URL changes
   useEffect(() => {
@@ -404,6 +413,20 @@ export default function Auth() {
       setLoading(false);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+        <div className="flex flex-col items-center">
+          <svg className="animate-spin h-8 w-8 text-purple-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p className="text-gray-400 font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 
