@@ -4,8 +4,11 @@ import { collection, query, where, getDocs, orderBy, limit } from 'firebase/fire
 import { db } from '../lib/firebase';
 import { Listing } from '../types';
 import { Search, Building2, BookOpen, Coffee, GraduationCap, ArrowRight, Star } from 'lucide-react';
-import { ListingCard } from '../components/ListingCard';
+import { GlassCard } from '../components/ui/GlassCard';
+import { LiquidButton } from '../components/ui/LiquidButton';
+import { LiquidInput } from '../components/ui/LiquidInput';
 import { motion } from 'motion/react';
+import { ListingCard } from '../components/ListingCard';
 
 export default function Home() {
   const [featuredListings, setFeaturedListings] = useState<Listing[]>([]);
@@ -56,21 +59,20 @@ export default function Home() {
   };
 
   const categories = [
-    { name: 'PG', icon: Building2, color: 'text-blue-400', bg: 'bg-blue-500/20' },
-    { name: 'Mess', icon: Coffee, color: 'text-orange-400', bg: 'bg-orange-500/20' },
-    { name: 'Library', icon: BookOpen, color: 'text-green-400', bg: 'bg-green-500/20' },
-    { name: 'Coaching Institute', icon: GraduationCap, color: 'text-purple-400', bg: 'bg-purple-500/20' },
+    { name: 'PG', icon: Building2, color: 'text-[#00E5FF]', bg: 'bg-[#00E5FF]/10' },
+    { name: 'Mess', icon: Coffee, color: 'text-[#FF3B3B]', bg: 'bg-[#FF3B3B]/10' },
+    { name: 'Library', icon: BookOpen, color: 'text-[#8A2BE2]', bg: 'bg-[#8A2BE2]/10' },
+    { name: 'Coaching Institute', icon: GraduationCap, color: 'text-[#00E5FF]', bg: 'bg-[#00E5FF]/10' },
   ];
 
   return (
-    <div className="min-h-screen pb-20 md:pb-12 bg-[#0B0E14]">
+    <div className="min-h-screen pb-20 md:pb-12 bg-transparent">
       {/* Hero Section */}
       <div className="relative overflow-hidden pt-24 pb-40 px-4 sm:px-6 lg:px-8">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/40 via-[#0B0E14] to-[#0B0E14]"></div>
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] opacity-30 bg-blue-500 blur-[120px] rounded-full pointer-events-none"></div>
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/20 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/20 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] opacity-30 bg-[#00E5FF] blur-[120px] rounded-full pointer-events-none"></div>
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#8A2BE2]/20 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#FF3B3B]/20 blur-[100px] rounded-full mix-blend-screen pointer-events-none"></div>
           
           {/* Grid Pattern */}
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LCAyNTUsIDI1NSwgMC4wNSkiLz48L3N2Zz4=')] opacity-50"></div>
@@ -98,27 +100,24 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             className="w-full max-w-[700px] mx-auto px-4 sm:px-0 mt-4 sm:mt-5 sticky top-20 z-40"
           >
-            <div className="relative flex items-center w-full h-[50px] sm:h-[56px] bg-white/5 backdrop-blur-[10px] border border-white/10 rounded-[14px] sm:rounded-[18px] shadow-[0_8px_32px_rgba(0,0,0,0.2)] focus-within:shadow-[0_0_20px_rgba(255,255,255,0.1)] focus-within:border-white/20 transition-all duration-300 overflow-hidden">
-              <div className="pl-4 sm:pl-5 flex items-center justify-center">
-                <Search className="h-5 w-5 text-gray-400 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
+            <div className="relative flex items-center w-full h-[60px] bg-[rgba(255,255,255,0.05)] backdrop-blur-xl border border-white/10 rounded-[30px] shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_8px_32px_rgba(0,0,0,0.37)] focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_0_20px_rgba(0,229,255,0.3)] focus-within:border-[#00E5FF]/50 focus-within:bg-[rgba(255,255,255,0.08)] transition-all duration-300 overflow-hidden group">
+              <div className="pl-5 flex items-center justify-center">
+                <Search className="h-5 w-5 text-gray-400 group-focus-within:text-[#00E5FF] transition-colors" />
               </div>
               <input
                 type="text"
                 placeholder="Search PGs, libraries, coaching..."
-                className="flex-grow bg-transparent border-none focus:ring-0 text-white placeholder-gray-400 text-base sm:text-lg py-2 px-3 sm:px-4 outline-none font-medium w-full"
+                className="flex-grow bg-transparent border-none focus:ring-0 text-white placeholder-gray-500 text-base py-2 px-4 outline-none font-medium w-full"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <div className="pr-1.5 sm:pr-2 flex items-center h-full py-1.5 sm:py-2">
-                <motion.button 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.97 }}
+              <div className="pr-2 flex items-center h-full py-2">
+                <LiquidButton 
                   type="submit"
-                  className="h-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-4 sm:px-6 rounded-[10px] sm:rounded-[14px] font-bold text-sm sm:text-base transition-all shadow-[0_0_15px_rgba(59,130,246,0.4)] flex items-center gap-2"
+                  className="h-full py-0 px-6 rounded-[24px]"
                 >
                   Search
-                  <ArrowRight className="h-4 w-4" />
-                </motion.button>
+                </LiquidButton>
               </div>
             </div>
           </motion.form>
@@ -137,12 +136,14 @@ export default function Home() {
           {categories.map((cat, index) => {
             const Icon = cat.icon;
             return (
-              <Link to="/search" state={{ category: cat.name }} key={index} className="glass-card rounded-3xl p-8 flex flex-col items-center justify-center text-center hover:-translate-y-2 transition-all duration-500 group cursor-pointer border border-gray-800/60 hover:border-gray-700 shadow-xl">
-                <div className={`p-5 rounded-2xl ${cat.bg} ${cat.color} mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg`}>
-                  <Icon className="h-10 w-10" />
-                </div>
-                <h3 className="text-white font-bold text-lg tracking-wide">{cat.name}</h3>
-              </Link>
+              <GlassCard key={index} className="p-8 flex flex-col items-center justify-center text-center hover:-translate-y-2 transition-all duration-500 group cursor-pointer" intensity="low">
+                <Link to="/search" state={{ category: cat.name }} className="w-full h-full flex flex-col items-center justify-center">
+                  <div className={`p-5 rounded-2xl ${cat.bg} ${cat.color} mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-[0_0_15px_rgba(255,255,255,0.1)]`}>
+                    <Icon className="h-10 w-10" />
+                  </div>
+                  <h3 className="text-white font-bold text-lg tracking-wide">{cat.name}</h3>
+                </Link>
+              </GlassCard>
             );
           })}
         </motion.div>
@@ -171,7 +172,7 @@ export default function Home() {
                       Featured Places
                     </h2>
                   </div>
-                  <Link to="/search" className="group flex items-center gap-2 text-sm font-bold text-blue-400 hover:text-blue-300 transition-colors bg-blue-500/10 hover:bg-blue-500/20 px-4 py-2 rounded-xl border border-blue-500/20">
+                  <Link to="/search" className="group flex items-center gap-2 text-sm font-bold text-[#00E5FF] hover:text-white transition-colors bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.1)] px-4 py-2 rounded-xl border border-white/10 shadow-[0_0_15px_rgba(0,229,255,0.1)]">
                     View all <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
@@ -198,7 +199,7 @@ export default function Home() {
                     Recently Added
                   </h2>
                 </div>
-                <Link to="/search" className="group flex items-center gap-2 text-sm font-bold text-blue-400 hover:text-blue-300 transition-colors bg-blue-500/10 hover:bg-blue-500/20 px-4 py-2 rounded-xl border border-blue-500/20">
+                <Link to="/search" className="group flex items-center gap-2 text-sm font-bold text-[#00E5FF] hover:text-white transition-colors bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.1)] px-4 py-2 rounded-xl border border-white/10 shadow-[0_0_15px_rgba(0,229,255,0.1)]">
                   View all <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
@@ -216,20 +217,20 @@ export default function Home() {
                   ))}
                 </div>
               ) : (
-                <div className="glass-card rounded-3xl p-16 text-center border-dashed border-2 border-gray-700/50 relative overflow-hidden">
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                <GlassCard className="p-16 text-center border-dashed border-2 border-white/10 relative overflow-hidden" intensity="low">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#00E5FF]/5 rounded-full blur-3xl pointer-events-none"></div>
                   
                   <div className="relative z-10 flex flex-col items-center justify-center">
                     <div className="relative mb-6">
-                      <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 rounded-full blur-xl animate-pulse"></div>
-                      <div className="h-24 w-24 bg-gray-900/80 backdrop-blur-xl rounded-full flex items-center justify-center border border-gray-700/50 shadow-xl relative z-10">
+                      <div className="absolute inset-0 bg-gradient-to-tr from-[#00E5FF]/20 to-[#8A2BE2]/20 rounded-full blur-xl animate-pulse"></div>
+                      <div className="h-24 w-24 bg-[rgba(255,255,255,0.06)] backdrop-blur-xl rounded-full flex items-center justify-center border border-white/10 shadow-xl relative z-10">
                         <Search className="h-10 w-10 text-gray-400" />
                       </div>
                     </div>
                     <h3 className="text-2xl font-extrabold text-white mb-3 tracking-tight">No listings yet</h3>
                     <p className="text-gray-400 max-w-md mx-auto text-base leading-relaxed">Check back later for new places or be the first to add a listing in your area.</p>
                   </div>
-                </div>
+                </GlassCard>
               )}
             </div>
           </>

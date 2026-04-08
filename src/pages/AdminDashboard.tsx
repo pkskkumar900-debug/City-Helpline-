@@ -174,12 +174,12 @@ export default function AdminDashboard() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-[#0B0E14] pb-20 md:pb-12"
+      className="min-h-screen pb-20 md:pb-12"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl shadow-lg shadow-blue-500/20">
+            <div className="p-3 bg-gradient-to-br from-[#00E5FF] to-[#8A2BE2] rounded-2xl shadow-[0_0_20px_rgba(0,229,255,0.3)]">
               <Shield className="h-8 w-8 text-white" />
             </div>
             <div>
@@ -187,8 +187,8 @@ export default function AdminDashboard() {
               <p className="text-gray-400 text-sm font-medium mt-1">Manage your platform's content and users</p>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-4 bg-gray-900/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-gray-800">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center overflow-hidden">
+          <div className="hidden sm:flex items-center gap-4 bg-[rgba(255,255,255,0.05)] backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10 shadow-[0_0_15px_rgba(0,229,255,0.05)]">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#00E5FF] to-[#8A2BE2] flex items-center justify-center overflow-hidden">
               {userProfile?.photoURL ? (
                 <img src={userProfile.photoURL} alt="Admin" className="h-full w-full object-cover" />
               ) : (
@@ -197,7 +197,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <p className="text-sm font-bold text-white">{userProfile?.name || 'Admin'}</p>
-              <p className="text-xs text-blue-400 font-medium">System Administrator</p>
+              <p className="text-xs text-[#00E5FF] font-medium">System Administrator</p>
             </div>
           </div>
         </div>
@@ -208,14 +208,14 @@ export default function AdminDashboard() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="glass-card rounded-3xl p-6 relative overflow-hidden group"
+            className="glass-card rounded-3xl p-6 relative overflow-hidden group border border-white/10"
           >
-            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-colors"></div>
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-[#00E5FF]/10 rounded-full blur-2xl group-hover:bg-[#00E5FF]/20 transition-colors"></div>
             <div className="flex items-center justify-between mb-4 relative z-10">
-              <div className="p-3 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20">
+              <div className="p-3 bg-[#00E5FF]/10 text-[#00E5FF] rounded-xl border border-[#00E5FF]/20">
                 <Building className="h-6 w-6" />
               </div>
-              <span className="text-xs font-bold text-green-400 bg-green-500/10 px-2 py-1 rounded-lg">+12%</span>
+              <span className="text-xs font-bold text-[#00E5FF] bg-[#00E5FF]/10 px-2 py-1 rounded-lg border border-[#00E5FF]/20">+12%</span>
             </div>
             <div className="relative z-10">
               <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Total Listings</p>
@@ -227,14 +227,14 @@ export default function AdminDashboard() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="glass-card rounded-3xl p-6 relative overflow-hidden group"
+            className="glass-card rounded-3xl p-6 relative overflow-hidden group border border-white/10"
           >
             <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl group-hover:bg-yellow-500/20 transition-colors"></div>
             <div className="flex items-center justify-between mb-4 relative z-10">
               <div className="p-3 bg-yellow-500/10 text-yellow-400 rounded-xl border border-yellow-500/20">
                 <CheckCircle className="h-6 w-6" />
               </div>
-              {pendingCount > 0 && <span className="text-xs font-bold text-yellow-400 bg-yellow-500/10 px-2 py-1 rounded-lg">Action Needed</span>}
+              {pendingCount > 0 && <span className="text-xs font-bold text-yellow-400 bg-yellow-500/10 px-2 py-1 rounded-lg border border-yellow-500/20">Action Needed</span>}
             </div>
             <div className="relative z-10">
               <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Pending Approval</p>
@@ -246,11 +246,11 @@ export default function AdminDashboard() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="glass-card rounded-3xl p-6 relative overflow-hidden group"
+            className="glass-card rounded-3xl p-6 relative overflow-hidden group border border-white/10"
           >
-            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-colors"></div>
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-[#8A2BE2]/10 rounded-full blur-2xl group-hover:bg-[#8A2BE2]/20 transition-colors"></div>
             <div className="flex items-center justify-between mb-4 relative z-10">
-              <div className="p-3 bg-green-500/10 text-green-400 rounded-xl border border-green-500/20">
+              <div className="p-3 bg-[#8A2BE2]/10 text-[#8A2BE2] rounded-xl border border-[#8A2BE2]/20">
                 <Users className="h-6 w-6" />
               </div>
             </div>
@@ -264,11 +264,11 @@ export default function AdminDashboard() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="glass-card rounded-3xl p-6 relative overflow-hidden group"
+            className="glass-card rounded-3xl p-6 relative overflow-hidden group border border-white/10"
           >
-            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-colors"></div>
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-[#FF3B3B]/10 rounded-full blur-2xl group-hover:bg-[#FF3B3B]/20 transition-colors"></div>
             <div className="flex items-center justify-between mb-4 relative z-10">
-              <div className="p-3 bg-purple-500/10 text-purple-400 rounded-xl border border-purple-500/20">
+              <div className="p-3 bg-[#FF3B3B]/10 text-[#FF3B3B] rounded-xl border border-[#FF3B3B]/20">
                 <Star className="h-6 w-6" />
               </div>
             </div>
@@ -281,15 +281,15 @@ export default function AdminDashboard() {
 
         {/* Tabs */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
-          <div className="flex bg-gray-900/80 backdrop-blur-md p-1.5 rounded-2xl border border-gray-800">
+          <div className="flex bg-[rgba(255,255,255,0.05)] backdrop-blur-md p-1.5 rounded-2xl border border-white/10 shadow-[0_0_15px_rgba(0,229,255,0.05)]">
             <button
-              className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${activeTab === 'listings' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+              className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${activeTab === 'listings' ? 'bg-[#00E5FF] text-black shadow-[0_0_15px_rgba(0,229,255,0.4)]' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
               onClick={() => setActiveTab('listings')}
             >
               Manage Listings
             </button>
             <button
-              className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${activeTab === 'users' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+              className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${activeTab === 'users' ? 'bg-[#00E5FF] text-black shadow-[0_0_15px_rgba(0,229,255,0.4)]' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
               onClick={() => setActiveTab('users')}
             >
               Manage Users
@@ -298,10 +298,10 @@ export default function AdminDashboard() {
           
           {activeTab === 'listings' && (
             <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
-              <div className="flex bg-gray-900/80 backdrop-blur-md rounded-xl p-1.5 border border-gray-800 flex-grow lg:flex-grow-0">
+              <div className="flex bg-[rgba(255,255,255,0.05)] backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex-grow lg:flex-grow-0 shadow-[0_0_15px_rgba(0,229,255,0.05)]">
                 <button
                   onClick={() => setStatusFilter('all')}
-                  className={`flex-1 lg:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${statusFilter === 'all' ? 'bg-gray-700 text-white shadow-md' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+                  className={`flex-1 lg:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${statusFilter === 'all' ? 'bg-[rgba(255,255,255,0.1)] text-white shadow-md border border-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
                 >
                   All
                 </button>
@@ -313,20 +313,20 @@ export default function AdminDashboard() {
                 </button>
                 <button
                   onClick={() => setStatusFilter('approved')}
-                  className={`flex-1 lg:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${statusFilter === 'approved' ? 'bg-green-500/20 text-green-400 shadow-md border border-green-500/20' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+                  className={`flex-1 lg:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${statusFilter === 'approved' ? 'bg-[#00E5FF]/20 text-[#00E5FF] shadow-md border border-[#00E5FF]/20' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
                 >
                   Approved
                 </button>
                 <button
                   onClick={() => setStatusFilter('rejected')}
-                  className={`flex-1 lg:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${statusFilter === 'rejected' ? 'bg-red-500/20 text-red-400 shadow-md border border-red-500/20' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+                  className={`flex-1 lg:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${statusFilter === 'rejected' ? 'bg-[#FF3B3B]/20 text-[#FF3B3B] shadow-md border border-[#FF3B3B]/20' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
                 >
                   Rejected
                 </button>
               </div>
               <Link
                 to="/add-listing"
-                className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-sm font-bold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/25 hover:scale-105 whitespace-nowrap"
+                className="px-5 py-2.5 bg-gradient-to-r from-[#00E5FF] to-[#8A2BE2] hover:from-[#8A2BE2] hover:to-[#00E5FF] text-white text-sm font-bold rounded-xl transition-all duration-300 shadow-[0_5px_15px_rgba(0,229,255,0.3)] hover:shadow-[0_0_25px_rgba(0,229,255,0.5)] hover:scale-105 whitespace-nowrap"
               >
                 + Create Listing
               </Link>
@@ -339,9 +339,9 @@ export default function AdminDashboard() {
           {activeTab === 'listings' ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-                <div className="relative flex items-center bg-gray-900/80 rounded-xl border border-gray-700/50 backdrop-blur-xl">
-                  <Search className="absolute left-4 h-5 w-5 text-gray-400 group-focus-within:text-blue-400 transition-colors" />
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00E5FF] to-[#8A2BE2] rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                <div className="relative flex items-center bg-[rgba(255,255,255,0.05)] rounded-xl border border-white/10 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
+                  <Search className="absolute left-4 h-5 w-5 text-gray-400 group-focus-within:text-[#00E5FF] transition-colors" />
                   <input
                     type="text"
                     placeholder="Search listings..."
@@ -352,11 +352,11 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00E5FF] to-[#8A2BE2] rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
                 <select
                   value={listingCategory}
                   onChange={(e) => setListingCategory(e.target.value)}
-                  className="relative w-full px-4 py-3 text-sm bg-gray-900/80 border border-gray-700/50 text-white rounded-xl focus:outline-none focus:ring-0 appearance-none backdrop-blur-xl"
+                  className="relative w-full px-4 py-3 text-sm bg-[rgba(255,255,255,0.05)] border border-white/10 text-white rounded-xl focus:outline-none focus:ring-0 appearance-none backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] [&>option]:bg-[#0B0E14]"
                 >
                   <option value="">All Categories</option>
                   {CATEGORIES.map(cat => (
@@ -365,11 +365,11 @@ export default function AdminDashboard() {
                 </select>
               </div>
               <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00E5FF] to-[#8A2BE2] rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
                 <select
                   value={listingCity}
                   onChange={(e) => setListingCity(e.target.value)}
-                  className="relative w-full px-4 py-3 text-sm bg-gray-900/80 border border-gray-700/50 text-white rounded-xl focus:outline-none focus:ring-0 appearance-none backdrop-blur-xl"
+                  className="relative w-full px-4 py-3 text-sm bg-[rgba(255,255,255,0.05)] border border-white/10 text-white rounded-xl focus:outline-none focus:ring-0 appearance-none backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] [&>option]:bg-[#0B0E14]"
                 >
                   <option value="">All Cities</option>
                   {cityOptions.map(city => (
@@ -380,9 +380,9 @@ export default function AdminDashboard() {
             </div>
           ) : (
             <div className="relative max-w-md group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative flex items-center bg-gray-900/80 rounded-xl border border-gray-700/50 backdrop-blur-xl">
-                <Search className="absolute left-4 h-5 w-5 text-gray-400 group-focus-within:text-blue-400 transition-colors" />
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00E5FF] to-[#8A2BE2] rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+              <div className="relative flex items-center bg-[rgba(255,255,255,0.05)] rounded-xl border border-white/10 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
+                <Search className="absolute left-4 h-5 w-5 text-gray-400 group-focus-within:text-[#00E5FF] transition-colors" />
                 <input
                   type="text"
                   placeholder="Search users by name or email..."
@@ -400,13 +400,13 @@ export default function AdminDashboard() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="glass-card rounded-3xl overflow-hidden border border-gray-800/60 shadow-2xl"
+          className="glass-card rounded-3xl overflow-hidden border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
         >
           {activeTab === 'listings' ? (
             <div className="overflow-x-auto">
               <table className="min-w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-gray-900/80 border-b border-gray-800/60">
+                  <tr className="bg-[rgba(255,255,255,0.02)] border-b border-white/10">
                     <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Listing</th>
                     <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Category</th>
                     <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">City</th>
@@ -414,12 +414,12 @@ export default function AdminDashboard() {
                     <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-800/60 bg-gray-900/30">
+                <tbody className="divide-y divide-white/5 bg-[rgba(0,0,0,0.2)]">
                   {filteredListings.map((listing) => (
-                    <tr key={listing.id} className="hover:bg-gray-800/40 transition-colors group">
+                    <tr key={listing.id} className="hover:bg-[rgba(255,255,255,0.02)] transition-colors group">
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-xl bg-gray-800 flex-shrink-0 overflow-hidden border border-gray-700/50">
+                          <div className="h-12 w-12 rounded-xl bg-[rgba(255,255,255,0.05)] flex-shrink-0 overflow-hidden border border-white/10">
                             {listing.images && listing.images.length > 0 ? (
                               <img src={listing.images[0]} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
                             ) : (
@@ -427,7 +427,7 @@ export default function AdminDashboard() {
                             )}
                           </div>
                           <div>
-                            <p className="text-sm font-bold text-white line-clamp-1 group-hover:text-blue-400 transition-colors">{listing.title}</p>
+                            <p className="text-sm font-bold text-white line-clamp-1 group-hover:text-[#00E5FF] transition-colors">{listing.title}</p>
                             <p className="text-xs font-medium text-gray-500 mt-0.5">by {listing.authorName}</p>
                           </div>
                         </div>
@@ -441,14 +441,14 @@ export default function AdminDashboard() {
                       <td className="py-4 px-6">
                         <div className="flex flex-col gap-2 items-start">
                           <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider ${
-                            listing.status === 'approved' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 
-                            listing.status === 'rejected' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 
+                            listing.status === 'approved' ? 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20' : 
+                            listing.status === 'rejected' ? 'bg-[#FF3B3B]/10 text-[#FF3B3B] border border-[#FF3B3B]/20' : 
                             'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
                           }`}>
                             {listing.status}
                           </span>
                           {listing.featured && (
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-blue-400 border border-blue-500/20">
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-[#00E5FF]/20 to-[#8A2BE2]/20 text-[#00E5FF] border border-[#00E5FF]/20">
                               Featured
                             </span>
                           )}
@@ -457,22 +457,22 @@ export default function AdminDashboard() {
                       <td className="py-4 px-6">
                         <div className="flex items-center justify-end gap-2">
                           {listing.status !== 'approved' && (
-                            <button onClick={() => handleStatusChange(listing.id, 'approved')} className="p-2 text-green-400 hover:bg-green-500/20 rounded-xl transition-all hover:scale-110" title="Approve">
+                            <button onClick={() => handleStatusChange(listing.id, 'approved')} className="p-2 text-[#00E5FF] hover:bg-[#00E5FF]/20 rounded-xl transition-all hover:scale-110" title="Approve">
                               <CheckCircle className="h-5 w-5" />
                             </button>
                           )}
                           {listing.status !== 'rejected' && (
-                            <button onClick={() => handleStatusChange(listing.id, 'rejected')} className="p-2 text-red-400 hover:bg-red-500/20 rounded-xl transition-all hover:scale-110" title="Reject">
+                            <button onClick={() => handleStatusChange(listing.id, 'rejected')} className="p-2 text-[#FF3B3B] hover:bg-[#FF3B3B]/20 rounded-xl transition-all hover:scale-110" title="Reject">
                               <XCircle className="h-5 w-5" />
                             </button>
                           )}
-                          <button onClick={() => handleToggleFeatured(listing.id, listing.featured)} className={`p-2 rounded-xl transition-all hover:scale-110 ${listing.featured ? 'text-blue-400 bg-blue-500/10 border border-blue-500/20' : 'text-gray-400 hover:bg-gray-800'}`} title="Toggle Featured">
-                            <Star className={`h-5 w-5 ${listing.featured ? 'fill-blue-400' : ''}`} />
+                          <button onClick={() => handleToggleFeatured(listing.id, listing.featured)} className={`p-2 rounded-xl transition-all hover:scale-110 ${listing.featured ? 'text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/20' : 'text-gray-400 hover:bg-[rgba(255,255,255,0.05)]'}`} title="Toggle Featured">
+                            <Star className={`h-5 w-5 ${listing.featured ? 'fill-[#00E5FF]' : ''}`} />
                           </button>
-                          <Link to={`/edit-listing/${listing.id}`} className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-xl transition-all hover:scale-110" title="Edit">
+                          <Link to={`/edit-listing/${listing.id}`} className="p-2 text-gray-400 hover:text-[#00E5FF] hover:bg-[#00E5FF]/10 rounded-xl transition-all hover:scale-110" title="Edit">
                             <Edit className="h-5 w-5" />
                           </Link>
-                          <button onClick={() => handleDeleteListing(listing.id)} className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all hover:scale-110" title="Delete">
+                          <button onClick={() => handleDeleteListing(listing.id)} className="p-2 text-gray-400 hover:text-[#FF3B3B] hover:bg-[#FF3B3B]/10 rounded-xl transition-all hover:scale-110" title="Delete">
                             <Trash2 className="h-5 w-5" />
                           </button>
                         </div>
@@ -484,8 +484,8 @@ export default function AdminDashboard() {
                       <td colSpan={5} className="py-24 text-center">
                         <div className="flex flex-col items-center justify-center">
                           <div className="relative mb-4">
-                            <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl animate-pulse"></div>
-                            <div className="h-16 w-16 bg-gray-800/80 backdrop-blur-xl rounded-full flex items-center justify-center border border-gray-700/50 shadow-xl relative z-10">
+                            <div className="absolute inset-0 bg-[#00E5FF]/20 rounded-full blur-xl animate-pulse"></div>
+                            <div className="h-16 w-16 bg-[rgba(255,255,255,0.05)] backdrop-blur-xl rounded-full flex items-center justify-center border border-white/10 shadow-[0_0_15px_rgba(0,229,255,0.1)] relative z-10">
                               <Search className="h-8 w-8 text-gray-400" />
                             </div>
                           </div>

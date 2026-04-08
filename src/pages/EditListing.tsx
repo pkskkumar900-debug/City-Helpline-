@@ -186,7 +186,7 @@ export default function EditListing() {
                   <input
                     type="text"
                     required
-                    className="w-full px-5 py-4 bg-gray-900/60 border border-gray-700/50 text-white rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-inner text-lg font-light"
+                    className="w-full px-5 py-4 bg-[rgba(255,255,255,0.05)] border border-white/10 text-white rounded-2xl focus:ring-0 focus:border-[#00E5FF]/50 focus:bg-[rgba(255,255,255,0.08)] outline-none transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] text-lg font-light backdrop-blur-xl"
                     placeholder="e.g., Premium Boys PG near Allen"
                     value={title}
                     onChange={e => setTitle(e.target.value)}
@@ -195,24 +195,28 @@ export default function EditListing() {
 
                 <div className="relative z-30">
                   <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Category</label>
-                  <SearchableSelect
-                    options={categoryOptions}
-                    value={category}
-                    onChange={setCategory}
-                    placeholder="Select Category"
-                    icon={<Tag className="h-5 w-5" />}
-                  />
+                  <div className="bg-[rgba(255,255,255,0.05)] rounded-2xl border border-white/10 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] focus-within:bg-[rgba(255,255,255,0.08)] focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] transition-all duration-300">
+                    <SearchableSelect
+                      options={categoryOptions}
+                      value={category}
+                      onChange={setCategory}
+                      placeholder="Select Category"
+                      icon={<Tag className="h-5 w-5 text-gray-400" />}
+                    />
+                  </div>
                 </div>
 
                 <div className="relative z-20">
                   <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">City</label>
-                  <SearchableSelect
-                    options={cityOptions}
-                    value={city}
-                    onChange={setCity}
-                    placeholder="Select City"
-                    icon={<MapPin className="h-5 w-5" />}
-                  />
+                  <div className="bg-[rgba(255,255,255,0.05)] rounded-2xl border border-white/10 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] focus-within:bg-[rgba(255,255,255,0.08)] focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] transition-all duration-300">
+                    <SearchableSelect
+                      options={cityOptions}
+                      value={city}
+                      onChange={setCity}
+                      placeholder="Select City"
+                      icon={<MapPin className="h-5 w-5 text-gray-400" />}
+                    />
+                  </div>
                 </div>
 
                 <div className="sm:col-span-2">
@@ -220,7 +224,7 @@ export default function EditListing() {
                   <textarea
                     required
                     rows={5}
-                    className="w-full px-5 py-4 bg-gray-900/60 border border-gray-700/50 text-white rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none shadow-inner text-lg font-light"
+                    className="w-full px-5 py-4 bg-[rgba(255,255,255,0.05)] border border-white/10 text-white rounded-2xl focus:ring-0 focus:border-[#00E5FF]/50 focus:bg-[rgba(255,255,255,0.08)] outline-none transition-all resize-none shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] text-lg font-light backdrop-blur-xl"
                     placeholder="Describe your listing in detail..."
                     value={description}
                     onChange={e => setDescription(e.target.value)}
@@ -232,7 +236,7 @@ export default function EditListing() {
                   <textarea
                     required
                     rows={3}
-                    className="w-full px-5 py-4 bg-gray-900/60 border border-gray-700/50 text-white rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none shadow-inner text-lg font-light"
+                    className="w-full px-5 py-4 bg-[rgba(255,255,255,0.05)] border border-white/10 text-white rounded-2xl focus:ring-0 focus:border-[#00E5FF]/50 focus:bg-[rgba(255,255,255,0.08)] outline-none transition-all resize-none shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] text-lg font-light backdrop-blur-xl"
                     placeholder="Enter complete address"
                     value={address}
                     onChange={e => setAddress(e.target.value)}
@@ -245,7 +249,7 @@ export default function EditListing() {
                     type="number"
                     required
                     min="0"
-                    className="w-full px-5 py-4 bg-gray-900/60 border border-gray-700/50 text-white rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-inner text-lg font-light"
+                    className="w-full px-5 py-4 bg-[rgba(255,255,255,0.05)] border border-white/10 text-white rounded-2xl focus:ring-0 focus:border-[#00E5FF]/50 focus:bg-[rgba(255,255,255,0.08)] outline-none transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] text-lg font-light backdrop-blur-xl"
                     placeholder="e.g., 5000"
                     value={price}
                     onChange={e => setPrice(e.target.value)}
@@ -257,7 +261,7 @@ export default function EditListing() {
                   <input
                     type="text"
                     required
-                    className="w-full px-5 py-4 bg-gray-900/60 border border-gray-700/50 text-white rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-inner text-lg font-light"
+                    className="w-full px-5 py-4 bg-[rgba(255,255,255,0.05)] border border-white/10 text-white rounded-2xl focus:ring-0 focus:border-[#00E5FF]/50 focus:bg-[rgba(255,255,255,0.08)] outline-none transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] text-lg font-light backdrop-blur-xl"
                     placeholder="e.g., +91 9876543210"
                     value={contact}
                     onChange={e => setContact(e.target.value)}
@@ -266,16 +270,16 @@ export default function EditListing() {
 
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Images</label>
-                  <div className="mt-2 flex justify-center px-6 pt-8 pb-8 border-2 border-gray-600/50 border-dashed rounded-3xl hover:bg-gray-800/40 transition-colors bg-gray-900/40 shadow-inner group cursor-pointer relative overflow-hidden">
-                    <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="mt-2 flex justify-center px-6 pt-8 pb-8 border-2 border-white/10 border-dashed rounded-3xl hover:bg-[rgba(255,255,255,0.05)] transition-colors bg-[rgba(255,255,255,0.02)] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] group cursor-pointer relative overflow-hidden backdrop-blur-xl">
+                    <div className="absolute inset-0 bg-[#00E5FF]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div className="space-y-3 text-center relative z-10">
-                      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-800/80 mb-2 group-hover:scale-110 transition-transform shadow-lg border border-gray-700/50">
-                        <UploadCloud className="h-8 w-8 text-blue-400" />
+                      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[rgba(255,255,255,0.05)] mb-2 group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(0,229,255,0.1)] border border-white/10 group-hover:border-[#00E5FF]/50">
+                        <UploadCloud className="h-8 w-8 text-[#00E5FF]" />
                       </div>
                       <div className="flex text-sm text-gray-300 justify-center font-medium">
                         <label
                           htmlFor="file-upload"
-                          className="relative cursor-pointer rounded-md text-blue-400 hover:text-blue-300 focus-within:outline-none"
+                          className="relative cursor-pointer rounded-md text-[#00E5FF] hover:text-white focus-within:outline-none transition-colors"
                         >
                           <span>Upload new files</span>
                           <input

@@ -47,18 +47,18 @@ export function SearchableSelect({ options, value, onChange, placeholder, icon }
   const selectedOption = options.find(opt => opt.value === value);
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative h-full" ref={dropdownRef}>
       <div 
-        className="w-full pl-10 pr-10 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white cursor-pointer flex items-center justify-between hover:bg-gray-800/80 transition-all focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent"
+        className="w-full h-full pl-12 pr-10 py-4 bg-transparent text-white cursor-pointer flex items-center justify-between transition-all"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#00E5FF] transition-colors">
           {icon}
         </div>
-        <span className={`truncate ${!selectedOption ? 'text-gray-400' : ''}`}>
+        <span className={`truncate ${!selectedOption ? 'text-gray-500' : ''}`}>
           {selectedOption ? selectedOption.label : placeholder}
         </span>
-        <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </div>
 
       <AnimatePresence>
@@ -68,13 +68,13 @@ export function SearchableSelect({ options, value, onChange, placeholder, icon }
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute z-50 w-full mt-2 bg-gray-800 border border-gray-700 rounded-xl shadow-xl overflow-hidden"
+            className="absolute z-50 w-full mt-2 bg-[rgba(13,13,13,0.95)] backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden"
           >
-            <div className="p-2 border-b border-gray-700 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <div className="p-3 border-b border-white/10 relative">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 type="text"
-                className="w-full pl-8 pr-4 py-2 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"
+                className="w-full pl-9 pr-4 py-2.5 bg-[rgba(255,255,255,0.06)] border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#00E5FF]/50 transition-colors text-sm"
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -84,7 +84,7 @@ export function SearchableSelect({ options, value, onChange, placeholder, icon }
             
             <div className="max-h-60 overflow-y-auto p-2 custom-scrollbar">
               <div 
-                className={`px-3 py-2 rounded-lg cursor-pointer flex items-center justify-between text-sm ${value === '' ? 'bg-blue-600/20 text-blue-400' : 'text-gray-300 hover:bg-gray-700'}`}
+                className={`px-3 py-2.5 rounded-xl cursor-pointer flex items-center justify-between text-sm transition-colors ${value === '' ? 'bg-[#00E5FF]/10 text-[#00E5FF]' : 'text-gray-300 hover:bg-[rgba(255,255,255,0.06)] hover:text-white'}`}
                 onClick={() => {
                   onChange('');
                   setIsOpen(false);
@@ -105,7 +105,7 @@ export function SearchableSelect({ options, value, onChange, placeholder, icon }
                   {opts.map(option => (
                     <div
                       key={option.value}
-                      className={`px-3 py-2 rounded-lg cursor-pointer flex items-center justify-between text-sm mt-1 ${value === option.value ? 'bg-blue-600/20 text-blue-400' : 'text-gray-300 hover:bg-gray-700'}`}
+                      className={`px-3 py-2.5 rounded-xl cursor-pointer flex items-center justify-between text-sm mt-1 transition-colors ${value === option.value ? 'bg-[#00E5FF]/10 text-[#00E5FF]' : 'text-gray-300 hover:bg-[rgba(255,255,255,0.06)] hover:text-white'}`}
                       onClick={() => {
                         onChange(option.value);
                         setIsOpen(false);

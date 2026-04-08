@@ -9,6 +9,10 @@ import { LogIn, UserPlus, Eye, EyeOff, Mail, Lock, User, AlertCircle, Phone, Bui
 import { CATEGORIES, STATE_CITIES } from '../lib/constants';
 import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
+import { LiquidInput } from '../components/ui/LiquidInput';
+import { LiquidButton } from '../components/ui/LiquidButton';
+import { LiquidCheckbox } from '../components/ui/LiquidCheckbox';
+import { GlassCard } from '../components/ui/GlassCard';
 
 export default function Auth() {
   const location = useLocation();
@@ -430,7 +434,7 @@ export default function Auth() {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-[#0a0a0a]"
+      className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-transparent"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ perspective: 1200 }}
@@ -445,7 +449,7 @@ export default function Auth() {
               scale: [1, 1.05, 1]
             }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] bg-blue-600/20 rounded-full blur-[120px]"
+            className="absolute top-[-10%] left-[-10%] w-[40rem] h-[40rem] bg-[#00E5FF]/10 rounded-full blur-[120px]"
           />
         </motion.div>
         <motion.div style={{ x: useTransform(mouseXSpring, [-0.5, 0.5], [-40, 40]), y: useTransform(mouseYSpring, [-0.5, 0.5], [-40, 40]) }} className="absolute inset-0">
@@ -456,7 +460,7 @@ export default function Auth() {
               scale: [1, 1.1, 1]
             }}
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] bg-purple-600/20 rounded-full blur-[120px]"
+            className="absolute bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] bg-[#8A2BE2]/10 rounded-full blur-[120px]"
           />
         </motion.div>
         <motion.div style={{ x: useTransform(mouseXSpring, [-0.5, 0.5], [20, -20]), y: useTransform(mouseYSpring, [-0.5, 0.5], [-20, 20]) }} className="absolute inset-0">
@@ -466,71 +470,91 @@ export default function Auth() {
               y: [0, 20, 0]
             }}
             transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-            className="absolute top-[20%] right-[20%] w-[20rem] h-[20rem] bg-indigo-500/10 rounded-full blur-[80px]"
+            className="absolute top-[20%] right-[20%] w-[20rem] h-[20rem] bg-[#FF3B3B]/10 rounded-full blur-[80px]"
           />
         </motion.div>
+
+        {/* Light Particles */}
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-white rounded-full"
+            initial={{
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+              opacity: Math.random() * 0.5 + 0.1,
+              scale: Math.random() * 2 + 0.5,
+            }}
+            animate={{
+              y: [null, Math.random() * -100 - 50],
+              opacity: [null, 0],
+            }}
+            transition={{
+              duration: Math.random() * 5 + 5,
+              repeat: Infinity,
+              ease: "linear",
+              delay: Math.random() * 5,
+            }}
+          />
+        ))}
       </div>
 
-      <motion.div 
+      <GlassCard
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-        className="max-w-md w-full space-y-8 p-10 rounded-[2rem] relative z-10 bg-gray-900/40 backdrop-blur-xl border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.3)]"
+        className="max-w-md w-full space-y-8 p-10 relative z-10"
+        intensity="high"
+        glowColor={isLogin ? 'rgba(0, 229, 255, 0.2)' : 'rgba(138, 43, 226, 0.2)'}
         style={{
           rotateX,
           rotateY,
           transformStyle: "preserve-3d",
-          boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 20px 40px rgba(0, 0, 0, 0.4)'
         }}
       >
         {/* Toggle Switch */}
-        <div className="flex p-1 bg-gray-900/60 rounded-xl border border-gray-700/50 mb-8 relative">
-          <motion.div 
-            className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-md"
-            animate={{ left: isLogin ? '4px' : 'calc(50%)' }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          />
+        <div className="flex justify-center gap-4 mb-8 relative z-10" style={{ transform: "translateZ(30px)" }}>
           <button
             type="button"
             onClick={() => !isLogin && toggleAuthMode()}
-            className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-colors relative z-10 ${
-              isLogin ? 'text-white' : 'text-gray-400 hover:text-gray-200'
-            }`}
+            className={`golden-button ${isLogin ? 'golden-button-signup' : ''} flex-1`}
           >
-            Log In
+            Login
           </button>
           <button
             type="button"
             onClick={() => isLogin && toggleAuthMode()}
-            className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-colors relative z-10 ${
-              !isLogin ? 'text-white' : 'text-gray-400 hover:text-gray-200'
-            }`}
+            className={`golden-button ${!isLogin ? 'golden-button-signup' : ''} flex-1`}
           >
             Sign Up
           </button>
         </div>
 
-        <div className="text-center relative">
+        <div className="text-center relative" style={{ transform: "translateZ(40px)" }}>
           <motion.div 
             key={isLogin ? 'login-icon' : 'signup-icon'}
             initial={{ scale: 0.5, opacity: 0, rotate: -10 }}
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            whileHover={{ scale: 1.05, rotate: isLogin ? 5 : -5 }}
+            whileHover={{ scale: 1.1, rotate: isLogin ? 10 : -10, translateZ: 20 }}
             whileTap={{ scale: 0.95 }}
-            className={`mx-auto h-20 w-20 bg-gradient-to-br ${isLogin ? 'from-blue-500 to-purple-600' : 'from-purple-500 to-blue-600'} rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(59,130,246,0.5)] mb-8 relative group`}
+            className={`mx-auto h-20 w-20 bg-gradient-to-br ${isLogin ? 'from-[#00E5FF] to-[#8A2BE2]' : 'from-[#8A2BE2] to-[#FF3B3B]'} rounded-3xl flex items-center justify-center shadow-[0_0_30px_rgba(0,229,255,0.5)] mb-8 relative group cursor-pointer`}
+            style={{ 
+              transformStyle: "preserve-3d",
+              boxShadow: isLogin ? '0 0 30px rgba(0,229,255,0.5)' : '0 0 30px rgba(138,43,226,0.5)'
+            }}
           >
-            <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
             {isLogin ? (
               <LogIn className="h-10 w-10 text-white relative z-10" />
             ) : (
               <UserPlus className="h-10 w-10 text-white relative z-10" />
             )}
           </motion.div>
-          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 drop-shadow-sm tracking-tight">
+          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 drop-shadow-sm tracking-tight" style={{ transform: "translateZ(30px)" }}>
             {isLogin ? 'Welcome Back' : 'Create Account'}
           </h2>
-          <p className="mt-3 text-sm text-gray-400 font-medium">
+          <p className="mt-3 text-sm text-gray-400 font-medium" style={{ transform: "translateZ(20px)" }}>
             {isLogin ? 'Log in to access your account' : 'Join the City Helpline community'}
           </p>
         </div>
@@ -543,17 +567,18 @@ export default function Auth() {
             exit={{ opacity: 0, x: isLogin ? 20 : -20 }}
             transition={{ duration: 0.3 }}
             className="mt-10 space-y-6" 
+            style={{ transform: "translateZ(50px)" }}
           >
             <form onSubmit={isLogin ? handleLoginSubmit : handleSignupSubmit} className="space-y-6">
               {!isLogin && (
-              <div className="flex p-1 bg-gray-900/60 rounded-xl border border-gray-700/50 mb-6">
+              <div className="flex p-1 bg-[rgba(255,255,255,0.03)] rounded-[40px] border border-white/10 mb-6 backdrop-blur-sm" style={{ transform: "translateZ(20px)" }}>
                 <button
                   type="button"
                   onClick={() => setRole('user')}
-                  className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all ${
+                  className={`flex-1 py-2.5 text-sm font-medium rounded-[36px] transition-all ${
                     role === 'user' 
-                      ? 'bg-purple-600 text-white shadow-md' 
-                      : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
+                      ? 'bg-gradient-to-r from-[#8A2BE2]/80 to-[#FF3B3B]/80 text-white shadow-[0_0_15px_rgba(138,43,226,0.5)]' 
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   User
@@ -562,10 +587,10 @@ export default function Auth() {
                 <button
                   type="button"
                   onClick={() => setRole('contributor')}
-                  className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all ${
+                  className={`flex-1 py-2.5 text-sm font-medium rounded-[36px] transition-all ${
                     role === 'contributor' 
-                      ? 'bg-purple-600 text-white shadow-md' 
-                      : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
+                      ? 'bg-gradient-to-r from-[#8A2BE2]/80 to-[#FF3B3B]/80 text-white shadow-[0_0_15px_rgba(138,43,226,0.5)]' 
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   Contributor
@@ -574,78 +599,53 @@ export default function Auth() {
               </div>
             )}
 
-            <div className="space-y-5">
+              <div className="space-y-5" style={{ transform: "translateZ(30px)" }}>
               {!isLogin && (
-                <div className="relative group">
+                <div className="relative group" style={{ transform: "translateZ(10px)" }}>
                   <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-purple-400">Full Name</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <User className={`h-5 w-5 transition-colors ${focusedInput === 'name' ? 'text-purple-400' : 'text-gray-500'}`} />
-                    </div>
-                    <input
-                      type="text"
-                      required
-                      className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 outline-none transition-all placeholder-gray-500 shadow-inner"
-                      placeholder="John Doe"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      onFocus={() => setFocusedInput('name')}
-                      onBlur={() => setFocusedInput(null)}
-                    />
-                  </div>
+                  <LiquidInput
+                    type="text"
+                    required
+                    placeholder="John Doe"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    icon={<User className="h-5 w-5" />}
+                    glowColor="rgba(138, 43, 226, 0.5)"
+                  />
                 </div>
               )}
 
-              <div className="relative group">
-                <label className={`block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:${isLogin ? 'text-blue-400' : 'text-purple-400'}`}>Email address</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Mail className={`h-5 w-5 transition-colors ${focusedInput === 'email' ? (isLogin ? 'text-blue-400' : 'text-purple-400') : 'text-gray-500'}`} />
-                  </div>
-                  <input
-                    type="email"
-                    required
-                    className={`appearance-none block w-full pl-11 pr-4 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-${isLogin ? 'blue' : 'purple'}-500/50 focus:border-${isLogin ? 'blue' : 'purple'}-500 outline-none transition-all placeholder-gray-500 shadow-inner`}
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    onFocus={() => setFocusedInput('email')}
-                    onBlur={() => setFocusedInput(null)}
-                  />
-                </div>
+              <div className="relative group" style={{ transform: "translateZ(10px)" }}>
+                <label className={`block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:${isLogin ? 'text-[#00E5FF]' : 'text-[#8A2BE2]'}`}>Email address</label>
+                <LiquidInput
+                  type="email"
+                  required
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  icon={<Mail className="h-5 w-5" />}
+                  glowColor={isLogin ? 'rgba(0, 229, 255, 0.5)' : 'rgba(138, 43, 226, 0.5)'}
+                />
               </div>
 
-              <div className="relative group">
+              <div className="relative group" style={{ transform: "translateZ(10px)" }}>
                 <div className="flex justify-between items-center mb-2">
-                  <label className={`block text-sm font-medium text-gray-300 transition-colors group-focus-within:${isLogin ? 'text-blue-400' : 'text-purple-400'}`}>Password</label>
+                  <label className={`block text-sm font-medium text-gray-300 transition-colors group-focus-within:${isLogin ? 'text-[#00E5FF]' : 'text-[#8A2BE2]'}`}>Password</label>
                   {isLogin && (
-                    <a href="#" className="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors">
+                    <a href="#" className="text-xs font-medium text-[#00E5FF] hover:text-white transition-colors" style={{ textShadow: '0 0 10px rgba(0, 229, 255, 0.5)' }}>
                       Forgot password?
                     </a>
                   )}
                 </div>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock className={`h-5 w-5 transition-colors ${focusedInput === 'password' ? (isLogin ? 'text-blue-400' : 'text-purple-400') : 'text-gray-500'}`} />
-                  </div>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    required
-                    className={`appearance-none block w-full pl-11 pr-12 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-${isLogin ? 'blue' : 'purple'}-500/50 focus:border-${isLogin ? 'blue' : 'purple'}-500 outline-none transition-all placeholder-gray-500 shadow-inner`}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    onFocus={() => setFocusedInput('password')}
-                    onBlur={() => setFocusedInput(null)}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-gray-300 transition-colors focus:outline-none"
-                  >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
-                </div>
+                <LiquidInput
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  icon={<Lock className="h-5 w-5" />}
+                  glowColor={isLogin ? 'rgba(0, 229, 255, 0.5)' : 'rgba(138, 43, 226, 0.5)'}
+                />
               </div>
 
               {!isLogin && role === 'contributor' && (
@@ -656,97 +656,85 @@ export default function Auth() {
                   className="space-y-5 overflow-hidden"
                 >
                   <div className="relative group">
-                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-purple-400">Phone Number</label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Phone className={`h-5 w-5 transition-colors ${focusedInput === 'phone' ? 'text-purple-400' : 'text-gray-500'}`} />
-                      </div>
-                      <input
-                        type="tel"
-                        required={role === 'contributor'}
-                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 outline-none transition-all placeholder-gray-500 shadow-inner"
-                        placeholder="+91 98765 43210"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        onFocus={() => setFocusedInput('phone')}
-                        onBlur={() => setFocusedInput(null)}
-                      />
-                    </div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-[#8A2BE2]">Phone Number</label>
+                    <LiquidInput
+                      type="tel"
+                      required={role === 'contributor'}
+                      placeholder="+91 98765 43210"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      icon={<Phone className="h-5 w-5" />}
+                      glowColor="rgba(138, 43, 226, 0.5)"
+                    />
                   </div>
 
                   <div className="relative group">
-                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-purple-400">Business Name</label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Building2 className={`h-5 w-5 transition-colors ${focusedInput === 'businessName' ? 'text-purple-400' : 'text-gray-500'}`} />
-                      </div>
-                      <input
-                        type="text"
-                        required={role === 'contributor'}
-                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 outline-none transition-all placeholder-gray-500 shadow-inner"
-                        placeholder="My Awesome PG"
-                        value={businessName}
-                        onChange={(e) => setBusinessName(e.target.value)}
-                        onFocus={() => setFocusedInput('businessName')}
-                        onBlur={() => setFocusedInput(null)}
-                      />
-                    </div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-[#8A2BE2]">Business Name</label>
+                    <LiquidInput
+                      type="text"
+                      required={role === 'contributor'}
+                      placeholder="My Awesome PG"
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                      icon={<Building2 className="h-5 w-5" />}
+                      glowColor="rgba(138, 43, 226, 0.5)"
+                    />
                   </div>
 
                   <div className="relative group">
-                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-purple-400">Business Type</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-[#8A2BE2]">Business Type</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Briefcase className={`h-5 w-5 transition-colors ${focusedInput === 'businessType' ? 'text-purple-400' : 'text-gray-500'}`} />
+                        <Briefcase className={`h-5 w-5 transition-colors ${focusedInput === 'businessType' ? 'text-[#8A2BE2]' : 'text-gray-500'}`} />
                       </div>
                       <select
                         required={role === 'contributor'}
-                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 outline-none transition-all shadow-inner"
+                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-[rgba(255,255,255,0.06)] border border-white/10 text-white rounded-2xl focus:border-[#8A2BE2]/50 outline-none transition-all backdrop-blur-md"
                         value={businessType}
                         onChange={(e) => setBusinessType(e.target.value)}
                         onFocus={() => setFocusedInput('businessType')}
                         onBlur={() => setFocusedInput(null)}
                       >
-                        <option value="" disabled>Select Business Type</option>
+                        <option value="" disabled className="bg-gray-900">Select Business Type</option>
                         {CATEGORIES.map(cat => (
-                          <option key={cat} value={cat}>{cat}</option>
+                          <option key={cat} value={cat} className="bg-gray-900">{cat}</option>
                         ))}
                       </select>
                     </div>
                   </div>
 
                   <div className="relative group">
-                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-purple-400">City</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-[#8A2BE2]">City</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <MapPin className={`h-5 w-5 transition-colors ${focusedInput === 'city' ? 'text-purple-400' : 'text-gray-500'}`} />
+                        <MapPin className={`h-5 w-5 transition-colors ${focusedInput === 'city' ? 'text-[#8A2BE2]' : 'text-gray-500'}`} />
                       </div>
                       <select
                         required={role === 'contributor'}
-                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 outline-none transition-all shadow-inner"
+                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-[rgba(255,255,255,0.06)] border border-white/10 text-white rounded-2xl focus:border-[#8A2BE2]/50 outline-none transition-all backdrop-blur-md"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
                         onFocus={() => setFocusedInput('city')}
                         onBlur={() => setFocusedInput(null)}
                       >
-                        <option value="" disabled>Select City</option>
+                        <option value="" disabled className="bg-gray-900">Select City</option>
                         {cityOptions.map(opt => (
-                          <option key={opt.value} value={opt.value}>{opt.label} ({opt.group})</option>
+                          <option key={opt.value} value={opt.value} className="bg-gray-900">{opt.label} ({opt.group})</option>
                         ))}
                       </select>
                     </div>
                   </div>
 
                   <div className="relative group">
-                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-purple-400">Full Address</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-[#8A2BE2]">Full Address</label>
                     <div className="relative">
                       <div className="absolute top-3.5 left-0 pl-4 flex items-start pointer-events-none">
-                        <MapPin className={`h-5 w-5 transition-colors ${focusedInput === 'address' ? 'text-purple-400' : 'text-gray-500'}`} />
+                        <MapPin className={`h-5 w-5 transition-colors ${focusedInput === 'address' ? 'text-[#8A2BE2]' : 'text-gray-500'}`} />
                       </div>
                       <textarea
                         required={role === 'contributor'}
                         rows={3}
-                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-gray-900/50 border border-gray-700/50 text-white rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 outline-none transition-all placeholder-gray-500 shadow-inner resize-none"
+                        className="appearance-none block w-full pl-11 pr-4 py-3.5 bg-[rgba(255,255,255,0.06)] border border-white/10 text-white rounded-2xl focus:border-[#8A2BE2]/50 outline-none transition-all placeholder-gray-500 backdrop-blur-md resize-none"
                         placeholder="123 Main St, Near Landmark"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
@@ -760,74 +748,58 @@ export default function Auth() {
               
               {isLogin && (
                 <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    className="h-4 w-4 bg-gray-900 border-gray-700 rounded text-blue-500 focus:ring-blue-500 focus:ring-offset-gray-900"
+                  <LiquidCheckbox
+                    checked={false} // You might want to add state for this
+                    onChange={() => {}}
+                    label="Remember me"
                   />
-                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-400">
-                    Remember me
-                  </label>
                 </div>
               )}
             </div>
 
-            <div>
-              <motion.button
-                whileHover={{ scale: 1.02, boxShadow: isLogin ? "0 0 20px rgba(59, 130, 246, 0.4)" : "0 0 20px rgba(168, 85, 247, 0.4)" }}
-                whileTap={{ scale: 0.98 }}
+            <div style={{ transform: "translateZ(40px)" }}>
+              <LiquidButton
                 type="submit"
                 disabled={loading}
-                className={`group relative w-full flex justify-center py-3.5 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-gradient-to-r ${isLogin ? 'from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 focus:ring-blue-500' : 'from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 focus:ring-purple-500'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:opacity-70 transition-all overflow-hidden`}
+                isLoading={loading}
+                className="w-full"
+                variant="primary"
+                glowColor={isLogin ? 'rgba(0, 229, 255, 0.6)' : 'rgba(138, 43, 226, 0.6)'}
               >
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-                <span className="relative flex items-center">
-                  {loading ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      {isLogin ? 'Authenticating...' : 'Creating account...'}
-                    </>
-                  ) : (isLogin ? 'Log in securely' : 'Sign up')}
-                </span>
-              </motion.button>
+                {isLogin ? 'Log in securely' : 'Sign up'}
+              </LiquidButton>
             </div>
             </form>
             
-            <div className="relative my-8">
+            <div className="relative my-8" style={{ transform: "translateZ(20px)" }}>
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-700/50"></div>
+                <div className="w-full border-t border-white/10"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-[#111318] text-gray-500 rounded-full border border-gray-700/50 text-xs uppercase tracking-wider font-semibold">
+                <span className="px-4 bg-transparent backdrop-blur-md text-gray-400 rounded-full border border-white/10 text-xs uppercase tracking-wider font-semibold">
                   Or continue with
                 </span>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+            <div className="space-y-4" style={{ transform: "translateZ(30px)" }}>
+              <LiquidButton
                 type="button"
                 onClick={loginWithGithub}
                 disabled={loading}
-                className="w-full flex items-center justify-center px-4 py-3 border border-gray-700 rounded-xl shadow-sm bg-gray-800 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:opacity-50 transition-colors"
+                variant="secondary"
+                className="w-full flex items-center justify-center"
               >
                 <Github className="h-5 w-5 mr-2" />
                 Continue with GitHub
-              </motion.button>
+              </LiquidButton>
 
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <LiquidButton
                 type="button"
                 onClick={() => handleSocialAuth(googleProvider)}
                 disabled={loading}
-                className="w-full flex items-center justify-center px-4 py-3 border border-gray-700 rounded-xl shadow-sm bg-gray-800 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:opacity-50 transition-colors"
+                variant="secondary"
+                className="w-full flex items-center justify-center"
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -836,11 +808,11 @@ export default function Auth() {
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                 </svg>
                 Continue with Google
-              </motion.button>
+              </LiquidButton>
             </div>
           </motion.div>
         </AnimatePresence>
-      </motion.div>
+      </GlassCard>
 
       {/* Role Selection Modal */}
       <AnimatePresence>

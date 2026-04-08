@@ -38,19 +38,19 @@ export function BottomNav() {
               {isActive && (
                 <motion.div
                   layoutId="bottom-nav-indicator"
-                  className="absolute top-0 w-12 h-1 bg-blue-500 rounded-b-full"
+                  className="absolute top-0 w-12 h-1 bg-[#00E5FF] rounded-b-full shadow-[0_0_10px_rgba(0,229,255,0.5)]"
                   initial={false}
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               )}
               <Icon
                 className={`h-6 w-6 mb-1 transition-colors ${
-                  isActive ? 'text-blue-400' : 'text-gray-400'
+                  isActive ? 'text-[#00E5FF] drop-shadow-[0_0_8px_rgba(0,229,255,0.5)]' : 'text-gray-500'
                 }`}
               />
               <span
                 className={`text-[10px] font-medium transition-colors ${
-                  isActive ? 'text-blue-400' : 'text-gray-400'
+                  isActive ? 'text-[#00E5FF]' : 'text-gray-500'
                 }`}
               >
                 {item.label}

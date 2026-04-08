@@ -159,24 +159,24 @@ export default function ListingDetails() {
           className="glass-card rounded-3xl overflow-hidden mb-12 relative"
         >
           {/* Decorative Background Elements */}
-          <div className="absolute -top-32 -right-32 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -top-32 -right-32 w-96 h-96 bg-[#00E5FF]/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-[#8A2BE2]/10 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 relative z-10">
             {/* Image Gallery */}
-            <div className="bg-gray-800/50 h-64 lg:h-auto relative min-h-[400px] lg:min-h-[500px]">
+            <div className="bg-[rgba(255,255,255,0.02)] h-64 lg:h-auto relative min-h-[400px] lg:min-h-[500px]">
               {listing.images && listing.images.length > 0 ? (
                 <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-500">No Image Available</div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F1A]/90 via-[#0B0F1A]/20 to-transparent"></div>
               <div className="absolute top-6 left-6 flex gap-3">
-                <span className="bg-blue-600/90 backdrop-blur-md text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.3)] border border-blue-500/50 uppercase tracking-wider">
+                <span className="bg-[#00E5FF]/20 backdrop-blur-md text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(0,229,255,0.3)] border border-[#00E5FF]/50 uppercase tracking-wider">
                   {listing.category}
                 </span>
                 {listing.featured && (
-                  <span className="bg-yellow-500/90 backdrop-blur-md text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(234,179,8,0.3)] border border-yellow-400/50 uppercase tracking-wider">
+                  <span className="bg-yellow-500/20 backdrop-blur-md text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(234,179,8,0.3)] border border-yellow-400/50 uppercase tracking-wider">
                     Featured
                   </span>
                 )}
@@ -184,25 +184,25 @@ export default function ListingDetails() {
               {currentUser && (
                 <button 
                   onClick={toggleSave}
-                  className="absolute top-6 right-6 p-3.5 rounded-full bg-gray-900/60 backdrop-blur-md hover:bg-gray-800/80 transition-all shadow-xl group/btn z-10 border border-gray-700/50 hover:scale-110"
+                  className="absolute top-6 right-6 p-3.5 rounded-full bg-[rgba(255,255,255,0.05)] backdrop-blur-md hover:bg-[rgba(255,255,255,0.1)] transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] group/btn z-10 border border-white/10 hover:scale-110"
                 >
                   <Heart 
-                    className={`h-6 w-6 transition-colors ${isSaved ? 'fill-red-500 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]' : 'text-white group-hover/btn:text-red-400'}`} 
+                    className={`h-6 w-6 transition-colors ${isSaved ? 'fill-[#FF3B3B] text-[#FF3B3B] drop-shadow-[0_0_8px_rgba(255,59,59,0.6)]' : 'text-white group-hover/btn:text-[#FF3B3B]'}`} 
                   />
                 </button>
               )}
             </div>
 
             {/* Details */}
-            <div className="p-8 lg:p-12 flex flex-col justify-center bg-gray-900/40 backdrop-blur-sm">
+            <div className="p-8 lg:p-12 flex flex-col justify-center bg-[rgba(255,255,255,0.02)] backdrop-blur-sm">
               <h1 className="text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 mb-6 tracking-tight drop-shadow-sm">{listing.title}</h1>
               
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300 mb-10">
-                <div className="flex items-center bg-gray-800/60 px-4 py-2 rounded-full border border-gray-700/50 shadow-inner">
-                  <MapPin className="h-4 w-4 mr-2 text-blue-400" />
+                <div className="flex items-center bg-[rgba(255,255,255,0.05)] px-4 py-2 rounded-full border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-md">
+                  <MapPin className="h-4 w-4 mr-2 text-[#00E5FF]" />
                   {listing.city}
                 </div>
-                <div className="flex items-center bg-gray-800/60 px-4 py-2 rounded-full border border-gray-700/50 shadow-inner">
+                <div className="flex items-center bg-[rgba(255,255,255,0.05)] px-4 py-2 rounded-full border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-md">
                   <Star className="h-4 w-4 mr-2 text-yellow-400 drop-shadow-[0_0_4px_rgba(250,204,21,0.5)]" />
                   <span className="font-bold text-white mr-1">{averageRating}</span> 
                   <span className="text-gray-400">({reviews.length} reviews)</span>
@@ -210,30 +210,30 @@ export default function ListingDetails() {
               </div>
 
               <div className="mb-10">
-                <h3 className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <div className="h-px w-6 bg-blue-500/50"></div> Description
+                <h3 className="text-xs font-bold text-[#00E5FF] uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <div className="h-px w-6 bg-[#00E5FF]/50"></div> Description
                 </h3>
                 <p className="text-gray-300 leading-relaxed text-lg font-light">{listing.description}</p>
               </div>
 
               <div className="mb-10">
-                <h3 className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <div className="h-px w-6 bg-blue-500/50"></div> Address
+                <h3 className="text-xs font-bold text-[#00E5FF] uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <div className="h-px w-6 bg-[#00E5FF]/50"></div> Address
                 </h3>
-                <p className="text-gray-300 bg-gray-800/40 p-5 rounded-2xl border border-gray-700/40 shadow-inner font-light">{listing.address}</p>
+                <p className="text-gray-300 bg-[rgba(255,255,255,0.02)] p-5 rounded-2xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] font-light backdrop-blur-md">{listing.address}</p>
               </div>
 
-              <div className="flex items-center justify-between mb-10 pb-10 border-b border-gray-700/50">
+              <div className="flex items-center justify-between mb-10 pb-10 border-b border-white/10">
                 <div>
                   <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Monthly Rent</h3>
-                  <p className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 drop-shadow-sm">
+                  <p className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#00E5FF] to-[#8A2BE2] drop-shadow-sm">
                     ₹{listing.price.toLocaleString()}
                   </p>
                 </div>
                 <div className="text-right">
                   <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Listed By</h3>
-                  <div className="flex items-center justify-end gap-3 text-white font-medium bg-gray-800/60 px-5 py-2.5 rounded-2xl border border-gray-700/50 shadow-inner">
-                    <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="flex items-center justify-end gap-3 text-white font-medium bg-[rgba(255,255,255,0.05)] px-5 py-2.5 rounded-2xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-md">
+                    <div className="h-10 w-10 bg-gradient-to-br from-[#00E5FF] to-[#8A2BE2] rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(0,229,255,0.3)]">
                       <User className="h-5 w-5 text-white" />
                     </div>
                     <span className="text-lg">{listing.authorName}</span>
@@ -244,7 +244,7 @@ export default function ListingDetails() {
               <div className="flex flex-col sm:flex-row gap-5">
                 <a
                   href={`tel:${listing.contact}`}
-                  className="flex-1 flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] hover:-translate-y-1"
+                  className="flex-1 flex items-center justify-center gap-3 bg-[rgba(0,229,255,0.1)] hover:bg-[rgba(0,229,255,0.2)] text-[#00E5FF] border border-[#00E5FF]/30 font-bold py-4 px-6 rounded-2xl transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_0_20px_rgba(0,229,255,0.2)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_0_30px_rgba(0,229,255,0.4)] hover:-translate-y-1 backdrop-blur-md"
                 >
                   <Phone className="h-5 w-5" />
                   Call Now
@@ -253,7 +253,7 @@ export default function ListingDetails() {
                   href={`https://wa.me/${listing.contact.replace(/[^0-9]/g, '')}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-emerald-400 hover:from-green-400 hover:to-emerald-300 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:-translate-y-1"
+                  className="flex-1 flex items-center justify-center gap-3 bg-[rgba(16,185,129,0.1)] hover:bg-[rgba(16,185,129,0.2)] text-emerald-400 border border-emerald-400/30 font-bold py-4 px-6 rounded-2xl transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_0_30px_rgba(16,185,129,0.4)] hover:-translate-y-1 backdrop-blur-md"
                 >
                   <MessageCircle className="h-5 w-5" />
                   WhatsApp
@@ -278,11 +278,11 @@ export default function ListingDetails() {
 
             {/* Add Review Form */}
             {currentUser ? (
-              <form onSubmit={handleReviewSubmit} className="mb-12 bg-gray-900/60 p-8 rounded-3xl border border-gray-700/50 shadow-inner">
+              <form onSubmit={handleReviewSubmit} className="mb-12 bg-[rgba(255,255,255,0.02)] p-8 rounded-3xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-md">
                 <h3 className="text-xl font-bold text-white mb-6">Write a Review</h3>
                 <div className="mb-6">
                   <label className="block text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Rating</label>
-                  <div className="flex gap-2 bg-gray-800/50 inline-flex p-2 rounded-2xl border border-gray-700/50">
+                  <div className="flex gap-2 bg-[rgba(255,255,255,0.05)] inline-flex p-2 rounded-2xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
@@ -300,7 +300,7 @@ export default function ListingDetails() {
                   <textarea
                     required
                     rows={4}
-                    className="w-full px-5 py-4 bg-gray-800/50 border border-gray-700 text-white rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none shadow-inner text-lg font-light"
+                    className="w-full px-5 py-4 bg-[rgba(255,255,255,0.05)] border border-white/10 text-white rounded-2xl focus:ring-0 focus:border-[#00E5FF]/50 focus:bg-[rgba(255,255,255,0.08)] outline-none transition-all resize-none shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] text-lg font-light backdrop-blur-xl"
                     placeholder="Share your experience..."
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
@@ -309,17 +309,17 @@ export default function ListingDetails() {
                 <button
                   type="submit"
                   disabled={submittingReview}
-                  className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-4 px-10 rounded-2xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0"
+                  className="bg-gradient-to-r from-[#00E5FF] to-[#8A2BE2] hover:from-[#8A2BE2] hover:to-[#00E5FF] text-white font-bold py-4 px-10 rounded-2xl transition-all shadow-[0_5px_15px_rgba(0,229,255,0.3)] hover:shadow-[0_0_25px_rgba(0,229,255,0.5)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0"
                 >
                   {submittingReview ? 'Submitting...' : 'Submit Review'}
                 </button>
               </form>
             ) : (
-              <div className="mb-12 bg-blue-900/10 p-10 rounded-3xl border border-blue-800/30 text-center backdrop-blur-md relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 opacity-50"></div>
+              <div className="mb-12 bg-[rgba(0,229,255,0.05)] p-10 rounded-3xl border border-[#00E5FF]/20 text-center backdrop-blur-md relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#00E5FF]/10 to-[#8A2BE2]/10 opacity-50"></div>
                 <div className="relative z-10">
                   <p className="text-blue-200 mb-8 text-xl font-light">You must be logged in to write a review.</p>
-                  <Link to="/login" className="inline-block bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-4 px-10 rounded-2xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] hover:-translate-y-1">
+                  <Link to="/login" className="inline-block bg-gradient-to-r from-[#00E5FF] to-[#8A2BE2] hover:from-[#8A2BE2] hover:to-[#00E5FF] text-white font-bold py-4 px-10 rounded-2xl transition-all shadow-[0_5px_15px_rgba(0,229,255,0.3)] hover:shadow-[0_0_25px_rgba(0,229,255,0.5)] hover:-translate-y-1">
                     Log in to Review
                   </Link>
                 </div>
@@ -335,11 +335,11 @@ export default function ListingDetails() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 + (index * 0.1) }}
                     key={review.id} 
-                    className="bg-gray-900/40 p-8 rounded-3xl border border-gray-700/40 hover:bg-gray-800/40 transition-colors"
+                    className="bg-[rgba(255,255,255,0.02)] p-8 rounded-3xl border border-white/10 hover:bg-[rgba(255,255,255,0.05)] transition-colors backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                       <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg border border-white/10">
+                        <div className="h-12 w-12 bg-gradient-to-br from-[#00E5FF] to-[#8A2BE2] rounded-full flex items-center justify-center text-white font-bold text-xl shadow-[0_0_15px_rgba(0,229,255,0.3)] border border-white/10">
                           {review.userName.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -350,7 +350,7 @@ export default function ListingDetails() {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center bg-gray-800/80 px-3 py-1.5 rounded-xl border border-gray-700/50 shadow-inner self-start sm:self-auto">
+                      <div className="flex items-center bg-[rgba(255,255,255,0.05)] px-3 py-1.5 rounded-xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] self-start sm:self-auto">
                         {[...Array(5)].map((_, i) => (
                           <Star key={i} className={`h-4 w-4 ${i < review.rating ? 'text-yellow-400 fill-current drop-shadow-[0_0_4px_rgba(250,204,21,0.6)]' : 'text-gray-700'}`} />
                         ))}
@@ -360,14 +360,14 @@ export default function ListingDetails() {
                   </motion.div>
                 ))
               ) : (
-                <div className="text-center py-20 bg-gray-900/30 rounded-3xl border border-gray-700/50 border-dashed relative overflow-hidden">
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="text-center py-20 bg-[rgba(255,255,255,0.02)] rounded-3xl border border-white/10 border-dashed relative overflow-hidden backdrop-blur-md">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#00E5FF]/5 rounded-full blur-3xl pointer-events-none"></div>
                   
                   <div className="relative z-10 flex flex-col items-center justify-center">
                     <div className="relative mb-6">
-                      <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 rounded-full blur-xl animate-pulse"></div>
-                      <div className="h-24 w-24 bg-gray-800/80 backdrop-blur-xl rounded-full flex items-center justify-center border border-gray-700/50 shadow-xl relative z-10">
-                        <MessageCircle className="h-10 w-10 text-gray-400" />
+                      <div className="absolute inset-0 bg-gradient-to-tr from-[#00E5FF]/20 to-[#8A2BE2]/20 rounded-full blur-xl animate-pulse"></div>
+                      <div className="h-24 w-24 bg-[rgba(255,255,255,0.05)] backdrop-blur-xl rounded-full flex items-center justify-center border border-white/10 shadow-[0_0_20px_rgba(0,229,255,0.1)] relative z-10">
+                        <MessageCircle className="h-10 w-10 text-[#00E5FF]" />
                       </div>
                     </div>
                     <h3 className="text-2xl font-extrabold text-white mb-3 tracking-tight">No reviews yet</h3>
