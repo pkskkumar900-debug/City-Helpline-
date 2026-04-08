@@ -502,7 +502,7 @@ export default function AdminDashboard() {
             <div className="overflow-x-auto">
               <table className="min-w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-gray-900/80 border-b border-gray-800/60">
+                  <tr className="bg-[rgba(255,255,255,0.02)] border-b border-white/10">
                     <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">User</th>
                     <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Contact</th>
                     <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Role</th>
@@ -510,18 +510,18 @@ export default function AdminDashboard() {
                     <th className="py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-800/60 bg-gray-900/30">
+                <tbody className="divide-y divide-white/5 bg-[rgba(0,0,0,0.2)]">
                   {filteredUsers.map((user) => (
-                    <tr key={user.uid} className={`hover:bg-gray-800/40 transition-colors group ${user.banned ? 'opacity-50 bg-red-900/5' : ''}`}>
+                    <tr key={user.uid} className={`hover:bg-[rgba(255,255,255,0.02)] transition-colors group ${user.banned ? 'opacity-50 bg-[#FF3B3B]/5' : ''}`}>
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-white font-bold border border-gray-600">
+                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[rgba(255,255,255,0.1)] to-[rgba(255,255,255,0.05)] flex items-center justify-center text-white font-bold border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]">
                             {user.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
                             <p className="text-sm font-bold text-white flex items-center gap-2">
                               {user.name}
-                              {user.banned && <span className="bg-red-500/20 text-red-400 text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider border border-red-500/20">Banned</span>}
+                              {user.banned && <span className="bg-[#FF3B3B]/20 text-[#FF3B3B] text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider border border-[#FF3B3B]/20">Banned</span>}
                             </p>
                           </div>
                         </div>
@@ -535,10 +535,10 @@ export default function AdminDashboard() {
                           <select
                             value={user.role}
                             onChange={(e) => handleRoleChange(user.uid, e.target.value)}
-                            className={`w-full px-3 py-2 text-xs font-bold uppercase tracking-wider rounded-lg border appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all ${
-                              user.role === 'admin' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' :
-                              user.role === 'contributor' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-                              'bg-gray-800 text-gray-300 border-gray-700'
+                            className={`w-full px-3 py-2 text-xs font-bold uppercase tracking-wider rounded-lg border appearance-none focus:outline-none focus:ring-2 focus:ring-[#00E5FF]/50 transition-all [&>option]:bg-[#0B0E14] ${
+                              user.role === 'admin' ? 'bg-[#8A2BE2]/10 text-[#8A2BE2] border-[#8A2BE2]/20' :
+                              user.role === 'contributor' ? 'bg-[#00E5FF]/10 text-[#00E5FF] border-[#00E5FF]/20' :
+                              'bg-[rgba(255,255,255,0.05)] text-gray-300 border-white/10'
                             }`}
                           >
                             <option value="user">User</option>
@@ -554,14 +554,14 @@ export default function AdminDashboard() {
                         <div className="flex items-center justify-end gap-2">
                           <button 
                             onClick={() => handleBanUser(user.uid, user.banned || false)} 
-                            className={`p-2 rounded-xl transition-all hover:scale-110 ${user.banned ? 'text-green-400 bg-green-500/10 border border-green-500/20' : 'text-yellow-400 hover:bg-yellow-500/10'}`}
+                            className={`p-2 rounded-xl transition-all hover:scale-110 ${user.banned ? 'text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/20' : 'text-yellow-400 hover:bg-yellow-500/10'}`}
                             title={user.banned ? "Unban User" : "Ban User"}
                           >
                             <Ban className="h-5 w-5" />
                           </button>
                           <button 
                             onClick={() => handleDeleteUser(user.uid)} 
-                            className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all hover:scale-110"
+                            className="p-2 text-gray-400 hover:text-[#FF3B3B] hover:bg-[#FF3B3B]/10 rounded-xl transition-all hover:scale-110"
                             title="Delete User"
                           >
                             <Trash2 className="h-5 w-5" />
@@ -575,8 +575,8 @@ export default function AdminDashboard() {
                       <td colSpan={5} className="py-24 text-center">
                         <div className="flex flex-col items-center justify-center">
                           <div className="relative mb-4">
-                            <div className="absolute inset-0 bg-purple-500/20 rounded-full blur-xl animate-pulse"></div>
-                            <div className="h-16 w-16 bg-gray-800/80 backdrop-blur-xl rounded-full flex items-center justify-center border border-gray-700/50 shadow-xl relative z-10">
+                            <div className="absolute inset-0 bg-[#8A2BE2]/20 rounded-full blur-xl animate-pulse"></div>
+                            <div className="h-16 w-16 bg-[rgba(255,255,255,0.05)] backdrop-blur-xl rounded-full flex items-center justify-center border border-white/10 shadow-[0_0_15px_rgba(138,43,226,0.1)] relative z-10">
                               <Users className="h-8 w-8 text-gray-400" />
                             </div>
                           </div>

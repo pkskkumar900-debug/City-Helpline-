@@ -271,14 +271,14 @@ export default function AddListing() {
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
                           key={index} 
-                          className="relative group rounded-2xl overflow-hidden border border-gray-700/50 aspect-square shadow-lg"
+                          className="relative group rounded-2xl overflow-hidden border border-white/10 aspect-square shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                         >
                           <img src={url} alt={`Preview ${index}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D]/80 via-[#0D0D0D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <button
                               type="button"
                               onClick={() => removeImage(index)}
-                              className="bg-red-500/90 backdrop-blur-sm text-white rounded-full p-3 transform hover:scale-110 transition-all shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-400/50"
+                              className="bg-[#FF3B3B]/90 backdrop-blur-sm text-white rounded-full p-3 transform hover:scale-110 transition-all shadow-[0_0_15px_rgba(255,59,59,0.5)] border border-[#FF3B3B]/50"
                             >
                               <X className="h-5 w-5" />
                             </button>
@@ -290,18 +290,18 @@ export default function AddListing() {
                 </div>
               </div>
 
-              <div className="pt-10 border-t border-gray-700/50 flex justify-end gap-5">
+              <div className="pt-10 border-t border-white/10 flex justify-end gap-5">
                 <button
                   type="button"
                   onClick={() => navigate('/')}
-                  className="px-8 py-4 rounded-2xl text-sm font-bold text-gray-400 hover:bg-gray-800/60 hover:text-white transition-all border border-transparent hover:border-gray-700/50 uppercase tracking-wider"
+                  className="px-8 py-4 rounded-2xl text-sm font-bold text-gray-400 hover:bg-[rgba(255,255,255,0.05)] hover:text-white transition-all border border-transparent hover:border-white/10 uppercase tracking-wider"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-4 px-10 rounded-2xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0 uppercase tracking-wider"
+                  className="bg-gradient-to-r from-[#00E5FF] to-[#8A2BE2] hover:from-[#8A2BE2] hover:to-[#00E5FF] text-white font-bold py-4 px-10 rounded-2xl transition-all shadow-[0_5px_15px_rgba(0,229,255,0.3)] hover:shadow-[0_0_25px_rgba(0,229,255,0.5)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0 uppercase tracking-wider"
                 >
                   {loading ? 'Submitting...' : 'Submit Listing'}
                 </button>

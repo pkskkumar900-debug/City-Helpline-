@@ -141,7 +141,7 @@ export default function EditListing() {
   };
 
   if (fetching) {
-    return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>;
+    return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00E5FF]"></div></div>;
   }
 
   return (
@@ -153,7 +153,7 @@ export default function EditListing() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button 
           onClick={() => navigate(-1)} 
-          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-6 transition-colors"
+          className="inline-flex items-center text-[#00E5FF] hover:text-[#00E5FF]/80 mb-6 transition-colors"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
@@ -166,15 +166,15 @@ export default function EditListing() {
           className="glass-card rounded-3xl p-8 lg:p-12 relative overflow-hidden"
         >
           {/* Decorative Background Elements */}
-          <div className="absolute -top-32 -right-32 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -top-32 -right-32 w-96 h-96 bg-[#00E5FF]/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-[#8A2BE2]/10 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="relative z-10">
             <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 mb-10 tracking-tight drop-shadow-sm">Edit Listing</h1>
             
             {error && (
-              <div className="mb-10 bg-red-900/20 border border-red-800/50 text-red-200 px-6 py-4 rounded-2xl text-sm backdrop-blur-md shadow-inner flex items-center gap-3">
-                <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
+              <div className="mb-10 bg-[#FF3B3B]/10 border border-[#FF3B3B]/30 text-[#FF3B3B] px-6 py-4 rounded-2xl text-sm backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] flex items-center gap-3">
+                <div className="h-2 w-2 rounded-full bg-[#FF3B3B] animate-pulse"></div>
                 {error}
               </div>
             )}
@@ -304,13 +304,13 @@ export default function EditListing() {
                       <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Existing Images</p>
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
                         {existingImages.map((url, index) => (
-                          <div key={index} className="relative group rounded-2xl overflow-hidden border border-gray-700/50 aspect-square shadow-lg">
+                          <div key={index} className="relative group rounded-2xl overflow-hidden border border-white/10 aspect-square shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
                             <img src={url} alt={`Existing ${index}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" referrerPolicy="no-referrer" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D]/80 via-[#0D0D0D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                               <button
                                 type="button"
                                 onClick={() => removeExistingImage(index)}
-                                className="bg-red-500/90 backdrop-blur-sm text-white rounded-full p-3 transform hover:scale-110 transition-all shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-400/50"
+                                className="bg-[#FF3B3B]/90 backdrop-blur-sm text-white rounded-full p-3 transform hover:scale-110 transition-all shadow-[0_0_15px_rgba(255,59,59,0.5)] border border-[#FF3B3B]/50"
                               >
                                 <X className="h-5 w-5" />
                               </button>
@@ -327,13 +327,13 @@ export default function EditListing() {
                       <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">New Images</p>
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
                         {newImagePreviewUrls.map((url, index) => (
-                          <div key={index} className="relative group rounded-2xl overflow-hidden border border-gray-700/50 aspect-square shadow-lg">
+                          <div key={index} className="relative group rounded-2xl overflow-hidden border border-white/10 aspect-square shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
                             <img src={url} alt={`New Preview ${index}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D]/80 via-[#0D0D0D]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                               <button
                                 type="button"
                                 onClick={() => removeNewImage(index)}
-                                className="bg-red-500/90 backdrop-blur-sm text-white rounded-full p-3 transform hover:scale-110 transition-all shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-red-400/50"
+                                className="bg-[#FF3B3B]/90 backdrop-blur-sm text-white rounded-full p-3 transform hover:scale-110 transition-all shadow-[0_0_15px_rgba(255,59,59,0.5)] border border-[#FF3B3B]/50"
                               >
                                 <X className="h-5 w-5" />
                               </button>
@@ -346,18 +346,18 @@ export default function EditListing() {
                 </div>
               </div>
 
-              <div className="pt-10 border-t border-gray-700/50 flex justify-end gap-5">
+              <div className="pt-10 border-t border-white/10 flex justify-end gap-5">
                 <button
                   type="button"
                   onClick={() => navigate(-1)}
-                  className="px-8 py-4 rounded-2xl text-sm font-bold text-gray-400 hover:bg-gray-800/60 hover:text-white transition-all border border-transparent hover:border-gray-700/50 uppercase tracking-wider"
+                  className="px-8 py-4 rounded-2xl text-sm font-bold text-gray-400 hover:bg-[rgba(255,255,255,0.05)] hover:text-white transition-all border border-transparent hover:border-white/10 uppercase tracking-wider"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-4 px-10 rounded-2xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0 uppercase tracking-wider"
+                  className="bg-gradient-to-r from-[#00E5FF] to-[#8A2BE2] hover:from-[#8A2BE2] hover:to-[#00E5FF] text-white font-bold py-4 px-10 rounded-2xl transition-all shadow-[0_5px_15px_rgba(0,229,255,0.3)] hover:shadow-[0_0_25px_rgba(0,229,255,0.5)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0 uppercase tracking-wider"
                 >
                   {loading ? 'Saving...' : 'Save Changes'}
                 </button>

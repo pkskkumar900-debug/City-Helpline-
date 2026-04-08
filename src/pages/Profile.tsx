@@ -180,7 +180,7 @@ export default function Profile() {
               {loading ? (
                 <div className="space-y-6">
                   {[1, 2, 3].map(i => (
-                    <div key={i} className="glass-card rounded-3xl h-40 animate-pulse bg-gray-800/50"></div>
+                    <div key={i} className="glass-card rounded-3xl h-40 animate-pulse bg-[rgba(255,255,255,0.05)] border border-white/10"></div>
                   ))}
                 </div>
               ) : savedListings.length > 0 ? (

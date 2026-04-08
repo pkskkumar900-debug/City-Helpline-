@@ -161,22 +161,22 @@ export default function AccountSettings() {
           </div>
 
           <form onSubmit={handleUpdateProfile} className="flex-grow space-y-4 w-full">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
+            <div className="relative group">
+              <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-[#00E5FF]">Full Name</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 bg-[rgba(255,255,255,0.05)] border border-white/10 rounded-2xl text-white focus:outline-none focus:border-[#00E5FF]/50 backdrop-blur-md transition-all"
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Email Address</label>
+            <div className="relative group">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
               <input
                 type="email"
                 value={userProfile?.email || ''}
-                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-gray-400 cursor-not-allowed"
+                className="w-full px-4 py-3 bg-[rgba(255,255,255,0.02)] border border-white/5 rounded-2xl text-gray-500 cursor-not-allowed backdrop-blur-md"
                 disabled
               />
               <p className="text-xs text-gray-500 mt-1">Email cannot be changed.</p>
@@ -184,18 +184,18 @@ export default function AccountSettings() {
             
             {userProfile?.role === 'contributor' && (
               <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Phone Number</label>
+                <div className="relative group">
+                  <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-[#00E5FF]">Phone Number</label>
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 bg-[rgba(255,255,255,0.05)] border border-white/10 rounded-2xl text-white focus:outline-none focus:border-[#00E5FF]/50 backdrop-blur-md transition-all"
                     required
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Business Name</label>
+                <div className="relative group">
+                  <label className="block text-sm font-medium text-gray-300 mb-2 transition-colors group-focus-within:text-[#00E5FF]">Business Name</label>
                   <input
                     type="text"
                     value={businessName}

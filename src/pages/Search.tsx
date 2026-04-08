@@ -135,7 +135,7 @@ export default function Search() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="glass-card rounded-3xl h-[400px] animate-pulse bg-gray-800/50 relative overflow-hidden">
+            <div key={i} className="glass-card rounded-3xl h-[400px] animate-pulse bg-[rgba(255,255,255,0.02)] border border-white/10 relative overflow-hidden">
               <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
             </div>
           ))}

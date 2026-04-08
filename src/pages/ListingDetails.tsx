@@ -105,11 +105,11 @@ export default function ListingDetails() {
   };
 
   if (loading) {
-    return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>;
+    return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00E5FF]"></div></div>;
   }
 
   if (!listing) {
-    return <div className="text-center py-20 text-2xl font-bold text-gray-700">Listing not found</div>;
+    return <div className="text-center py-20 text-2xl font-bold text-gray-400">Listing not found</div>;
   }
 
   const averageRating = listing.averageRating 

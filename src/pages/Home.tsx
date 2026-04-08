@@ -151,9 +151,9 @@ export default function Home() {
         {loading ? (
           <div className="space-y-12">
             <div>
-              <div className="h-10 w-64 bg-gray-800/50 rounded-xl animate-pulse mb-8"></div>
+              <div className="h-10 w-64 bg-[rgba(255,255,255,0.05)] rounded-xl animate-pulse mb-8 border border-white/10"></div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[1, 2, 3].map(i => <div key={i} className="glass-card rounded-3xl h-[400px] animate-pulse border border-gray-800/50"></div>)}
+                {[1, 2, 3].map(i => <div key={i} className="glass-card rounded-3xl h-[400px] animate-pulse border border-white/10 bg-[rgba(255,255,255,0.02)]"></div>)}
               </div>
             </div>
           </div>

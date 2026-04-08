@@ -513,18 +513,26 @@ export default function Auth() {
         }}
       >
         {/* Toggle Switch */}
-        <div className="flex justify-center gap-4 mb-8 relative z-10" style={{ transform: "translateZ(30px)" }}>
+        <div className="flex p-1 bg-[rgba(255,255,255,0.03)] rounded-[40px] border border-white/10 mb-8 backdrop-blur-sm relative z-10" style={{ transform: "translateZ(30px)" }}>
           <button
             type="button"
             onClick={() => !isLogin && toggleAuthMode()}
-            className={`golden-button ${isLogin ? 'golden-button-signup' : ''} flex-1`}
+            className={`flex-1 py-3 text-sm font-bold rounded-[36px] transition-all uppercase tracking-widest ${
+              isLogin 
+                ? 'bg-gradient-to-r from-[#00E5FF]/80 to-[#8A2BE2]/80 text-white shadow-[0_0_15px_rgba(0,229,255,0.5)]' 
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
           >
             Login
           </button>
           <button
             type="button"
             onClick={() => isLogin && toggleAuthMode()}
-            className={`golden-button ${!isLogin ? 'golden-button-signup' : ''} flex-1`}
+            className={`flex-1 py-3 text-sm font-bold rounded-[36px] transition-all uppercase tracking-widest ${
+              !isLogin 
+                ? 'bg-gradient-to-r from-[#8A2BE2]/80 to-[#FF3B3B]/80 text-white shadow-[0_0_15px_rgba(138,43,226,0.5)]' 
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
           >
             Sign Up
           </button>
@@ -788,7 +796,8 @@ export default function Auth() {
                 onClick={loginWithGithub}
                 disabled={loading}
                 variant="secondary"
-                className="w-full flex items-center justify-center"
+                className="w-full flex items-center justify-center bg-gradient-to-r from-gray-800 to-gray-900 border-gray-700 hover:border-gray-500 shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                glowColor="rgba(255, 255, 255, 0.4)"
               >
                 <Github className="h-5 w-5 mr-2" />
                 Continue with GitHub
@@ -799,7 +808,8 @@ export default function Auth() {
                 onClick={() => handleSocialAuth(googleProvider)}
                 disabled={loading}
                 variant="secondary"
-                className="w-full flex items-center justify-center"
+                className="w-full flex items-center justify-center bg-gradient-to-r from-blue-900/40 to-red-900/40 border-blue-500/30 hover:border-blue-400/50 shadow-[0_0_15px_rgba(66,133,244,0.2)]"
+                glowColor="rgba(66, 133, 244, 0.4)"
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
