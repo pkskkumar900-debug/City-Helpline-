@@ -82,17 +82,22 @@ export function Navbar() {
               </>
             ) : (
               <div className="flex items-center gap-4">
-                <Link
-                  to="/login"
-                  className="text-sm font-medium text-gray-400 hover:text-white transition-colors"
-                >
-                  Log in
-                </Link>
-                <Link to="/signup">
-                  <LiquidButton variant="primary" className="py-2 px-6 text-sm">
-                    Sign up
-                  </LiquidButton>
-                </Link>
+                <div className="golden-wrapper">
+                  <Link
+                    to="/login"
+                    className="golden-button flex items-center justify-center"
+                  >
+                    LOGIN
+                  </Link>
+                </div>
+                <div className="golden-wrapper">
+                  <Link
+                    to="/signup"
+                    className="golden-button flex items-center justify-center"
+                  >
+                    SIGN UP
+                  </Link>
+                </div>
               </div>
             )}
           </div>
