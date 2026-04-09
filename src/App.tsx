@@ -10,7 +10,6 @@ import { BottomNav } from './components/layout/BottomNav';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { useEffect } from 'react';
 import { Toaster } from 'sonner';
-import { CursorGlow } from './components/ui/CursorGlow';
 
 // Pages
 import Home from './pages/Home';
@@ -36,7 +35,6 @@ export default function App() {
     <AuthProvider>
       <Router>
         <div className="min-h-screen bg-transparent flex flex-col">
-          <CursorGlow />
           <Toaster position="top-center" theme="dark" />
           <Navbar />
           <main className="flex-grow pb-16 md:pb-0">
